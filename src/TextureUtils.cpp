@@ -2,7 +2,7 @@
 
 typedef unsigned long DWORD;
 #include "dds.h"
-#include "math.h"
+#include "EnvMapMath.h"
 
 #include <iostream>
 #include <fstream>

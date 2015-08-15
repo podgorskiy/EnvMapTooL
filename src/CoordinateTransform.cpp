@@ -1,4 +1,4 @@
-#include "math.h"
+#include "EnvMapMath.h"
 #include "CoordinateTransform.h"
 
 //Functions that transforms 3d direction to spherical 2d coordinates and vica versa

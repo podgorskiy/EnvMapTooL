@@ -1,6 +1,6 @@
 #include <cstdlib>
 
-#include "math.h"
+#include "EnvMapMath.h"
 #include "TextureUtils.h"
 #include "CoordinateTransform.h"
 
