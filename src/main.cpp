@@ -20,14 +20,14 @@ int main(int argc, char* argv[])
 	{
 		for (int j = 0;j<otex->width;j++)
 		{
-			double2 uv = GetUVFormIndices(otex->width, otex->height, i, j);
+			double2 uv = GetUVFromIndices(otex->width, otex->height, i, j);
 			double3 v;
 			bool valid = spheruv2v(uv, v);			
 			int face;
 			double2 uv_ = cube2uv(v,&face);
-			pixel p = FetchFormTexture( tex, uv_, face);
+			pixel p = FetchTexture( tex, uv_, face);
 			p *= valid;
-			WriteToTexture(otex, uv, 0, p);
+			WriteTexture(otex, uv, 0, p);
 		}	
 	}	
 	

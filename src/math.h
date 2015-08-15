@@ -1,7 +1,8 @@
 #pragma once
 #include <cmath>
 
-struct pixel {
+struct pixel 
+{
 	unsigned char r,g,b;
 	pixel():r(0),g(0),b(0){};
 	pixel(char r, char g, char b):r(r),g(g),b(b){};
@@ -122,7 +123,7 @@ inline double2 clamp(const double2& v, double a, double b)
 	return x;
 }
 
-inline int round(double number)
+inline int Round(double number)
 {
     return static_cast<int>(number < 0.0 ? ceil(number - 0.5) : floor(number + 0.5));
 }
