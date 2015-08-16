@@ -1,6 +1,6 @@
 #include "TextureUtils.h"
 
-typedef unsigned long DWORD;
+typedef unsigned int DWORD;
 #include "dds.h"
 #include "EnvMapMath.h"
 
@@ -45,7 +45,7 @@ texture* loadddstexture(const char* path)
 			int mip=1;
 			for (unsigned int j=0;j<header.dwMipMapCount-1;j++){
 				mip*=2;
-				int pos = static_cast<int>(ddsfile.tellg()); 
+				int pos = static_cast<int>(ddsfile.tellg());
 				if (alpha)
 					ddsfile.seekg(pos + t->width*t->height*sizeof(apixel)/mip/mip);
 				else
@@ -63,8 +63,8 @@ texture* loadddstexture(const char* path)
 	return t;
 }
 
-texture* loadtgatexture(const char* path){	
-	texture* t = new texture;	
+texture* loadtgatexture(const char* path){
+	texture* t = new texture;
 	std::ifstream  tgafile(path,std::ios::binary);
 	char buff[18];
 	tgafile.read(buff,18);
@@ -76,7 +76,7 @@ texture* loadtgatexture(const char* path){
 	return t;
 }
 
-int savetgatexture(texture* tex, const char* path,int image){	
+int savetgatexture(texture* tex, const char* path,int image){
 	std::ofstream  renderoutfile(path, std::ios::binary);
 	if ( ! renderoutfile) {
 		std::cout << "ошибка: не могу открыть выходной файл: " << std::endl;
@@ -106,7 +106,7 @@ void GetIndicesFromUV(const double2& uv, int width, int height, int& i, int& j)
 double2 GetUVFromIndices(int width, int height, int i, int j)
 {
 	return double2(
-		j/static_cast<double>(width-1), 
+		j/static_cast<double>(width-1),
 		(height-1 - i)/static_cast<double>(height-1)
 	);
 }

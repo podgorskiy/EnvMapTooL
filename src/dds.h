@@ -1,14 +1,16 @@
 // dds.h
 //
-// This header defines constants and structures that are useful when parsing 
+// This header defines constants and structures that are useful when parsing
 // DDS files.  DDS files were originally designed to use several structures
 // and constants that are native to DirectDraw and are defined in ddraw.h,
-// such as DDSURFACEDESC2 and DDSCAPS2.  This file defines similar 
-// (compatible) constants and structures so that one can use DDS files 
+// such as DDSURFACEDESC2 and DDSCAPS2.  This file defines similar
+// (compatible) constants and structures so that one can use DDS files
 // without needing to include ddraw.h.
 
 #ifndef _DDS_H_
 #define _DDS_H_
+
+#pragma pack(1)
 
 struct DDS_PIXELFORMAT
 {
@@ -56,7 +58,7 @@ const DDS_PIXELFORMAT DDSPF_R8G8B8 =
 const DDS_PIXELFORMAT DDSPF_R5G6B5 =
     { sizeof(DDS_PIXELFORMAT), DDS_RGB, 0, 16, 0x0000f800, 0x000007e0, 0x0000001f, 0x00000000 };
 
-#define DDS_HEADER_FLAGS_TEXTURE    0x00001007  // DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT 
+#define DDS_HEADER_FLAGS_TEXTURE    0x00001007  // DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT
 #define DDS_HEADER_FLAGS_MIPMAP     0x00020000  // DDSD_MIPMAPCOUNT
 #define DDS_HEADER_FLAGS_VOLUME     0x00800000  // DDSD_DEPTH
 #define DDS_HEADER_FLAGS_PITCH      0x00000008  // DDSD_PITCH
@@ -96,5 +98,6 @@ struct DDS_HEADER
     DWORD dwReserved2[3];
 };
 
+#pragma pack()
 
 #endif

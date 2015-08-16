@@ -1,15 +1,27 @@
-#include <cstdlib>
-
 #include "EnvMapMath.h"
 #include "TextureUtils.h"
 #include "CoordinateTransform.h"
 
+#include <cstdlib>
+#include <string>
+#include <iostream>
+#include <algorithm>
+#include <tclap/CmdLine.h>
+
+
 int main(int argc, char* argv[])
 {
+	TCLAP::CmdLine cmd("EnvMapTool. Stanislav Podgorskiy.", ' ', "0.1", false);
+
+	TCLAP::ValueArg<std::string> inputFileArg("i", "input", "The input texture file. Can be of the following formats: *.tga, *.png, .*ddse", true, "", "Input file");
+	cmd.add(inputFileArg);
+
+	cmd.parse( argc, argv );
+
 	double rad=0.002f;
 	int iter = 10;
 
-	texture* tex =  loadddstexture("uffizi_cros.dds");
+	texture* tex =  loadddstexture(inputFileArg.getValue().c_str());
 	texture* otex = new texture;
 	otex->width = tex->width * 4;
 	otex->height = tex->height * 4;
@@ -22,15 +34,15 @@ int main(int argc, char* argv[])
 		{
 			double2 uv = GetUVFromIndices(otex->width, otex->height, i, j);
 			double3 v;
-			bool valid = spheruv2v(uv, v);			
+			bool valid = spheruv2v(uv, v);
 			int face;
 			double2 uv_ = cube2uv(v,&face);
 			pixel p = FetchTexture( tex, uv_, face);
 			p *= valid;
 			WriteTexture(otex, uv, 0, p);
-		}	
-	}	
-	
+		}
+	}
+
 	/*
 	texture* otex = new texture;
 	otex->width = tex->width*4;
@@ -40,38 +52,38 @@ int main(int argc, char* argv[])
 	for (int i = 0;i<tex->height;i++){
 		for (int j = 0;j<tex->width;j++){
 			otex->buff[(j) + (i+otex->height/2)*otex->width] = tex->buff[tex->width*tex->height*0 + j + i*tex->width];
-		}	
-	}	
+		}
+	}
 	for (int i = 0;i<tex->height;i++){
 		for (int j = 0;j<tex->width;j++){
 			otex->buff[(j+otex->width/2) + (i+otex->height/2)*otex->width] = tex->buff[tex->width*tex->height*1 + j + i*tex->width];
-		}	
-	}	
+		}
+	}
 	for (int i = 0;i<tex->height;i++){
 		for (int j = 0;j<tex->width;j++){
 			otex->buff[(j+otex->width/4) + (i+otex->height/2)*otex->width] = tex->buff[tex->width*tex->height*4 + j + i*tex->width];
-		}	
-	}	
+		}
+	}
 	for (int i = 0;i<tex->height;i++){
 		for (int j = 0;j<tex->width;j++){
 			otex->buff[(j+otex->width/4) + (i)*otex->width] = tex->buff[tex->width*tex->height*5 + j + i*tex->width];
-		}	
-	}	
+		}
+	}
 	for (int i = 0;i<tex->height;i++){
 		for (int j = 0;j<tex->width;j++){
 			otex->buff[(j+otex->width/2) + (i)*otex->width] = tex->buff[tex->width*tex->height*3 + j + i*tex->width];
-		}	
-	}	
+		}
+	}
 	for (int i = 0;i<tex->height;i++){
 		for (int j = 0;j<tex->width;j++){
 			otex->buff[(j) + (i)*otex->width] = tex->buff[tex->width*tex->height*2 + j + i*tex->width];
-		}	
-	}	
-	
+		}
+	}
+
 	*/
 	/*
 	double ax=0.5;
-	
+
 	texture* otex = new texture;
 	otex->width = tex->width*4;
 	otex->height = tex->height*2;
@@ -90,8 +102,8 @@ int main(int argc, char* argv[])
 			int j_ = uv_.x*tex->width;
 			int i_ = (1.0-uv_.y)*tex->height;
 			otex->buff[(j) + (i+otex->height/2)*otex->width] = tex->buff[tex->width*tex->height*n + j_ + i_*tex->width];
-		}	
-	}	
+		}
+	}
 	for (int i = 0;i<tex->height;i++){
 		for (int j = 0;j<tex->width;j++){
 			uv.x = j/(double)tex->width;
@@ -103,8 +115,8 @@ int main(int argc, char* argv[])
 			int j_ = uv_.x*tex->width;
 			int i_ = (1.0-uv_.y)*tex->height;
 			otex->buff[(j+otex->width/2) + (i+otex->height/2)*otex->width] = tex->buff[tex->width*tex->height*n + j_ + i_*tex->width];
-		}	
-	}	
+		}
+	}
 	for (int i = 0;i<tex->height;i++){
 		for (int j = 0;j<tex->width;j++){
 			uv.x = j/(double)tex->width;
@@ -116,8 +128,8 @@ int main(int argc, char* argv[])
 			int j_ = uv_.x*tex->width;
 			int i_ = (1.0-uv_.y)*tex->height;
 			otex->buff[(j+otex->width/4) + (i+otex->height/2)*otex->width] = tex->buff[tex->width*tex->height*n + j_ + i_*tex->width];
-		}	
-	}	
+		}
+	}
 	for (int i = 0;i<tex->height;i++){
 		for (int j = 0;j<tex->width;j++){
 			uv.x = j/(double)tex->width;
@@ -129,8 +141,8 @@ int main(int argc, char* argv[])
 			int j_ = uv_.x*tex->width;
 			int i_ = (1.0-uv_.y)*tex->height;
 			otex->buff[(j+otex->width/4) + (i)*otex->width] = tex->buff[tex->width*tex->height*n + j_ + i_*tex->width];
-		}	
-	}	
+		}
+	}
 	for (int i = 0;i<tex->height;i++){
 		for (int j = 0;j<tex->width;j++){
 			uv.x = j/(double)tex->width;
@@ -142,8 +154,8 @@ int main(int argc, char* argv[])
 			int j_ = uv_.x*tex->width;
 			int i_ = (1.0-uv_.y)*tex->height;
 			otex->buff[(j+otex->width/2) + (i)*otex->width] = tex->buff[tex->width*tex->height*n + j_ + i_*tex->width];
-		}	
-	}	
+		}
+	}
 	for (int i = 0;i<tex->height;i++){
 		for (int j = 0;j<tex->width;j++){
 			uv.x = j/(double)tex->width;
@@ -155,15 +167,15 @@ int main(int argc, char* argv[])
 			int j_ = uv_.x*tex->width;
 			int i_ = (1.0-uv_.y)*tex->height;
 			otex->buff[(j) + (i)*otex->width] = tex->buff[tex->width*tex->height*n + j_ + i_*tex->width];
-		}	
-	}	
+		}
+	}
 
 		*/
 	//double ax=0.5;
 	/*
 	double rad=0.1f;
 	int iter=100;
-	
+
 	texture* otex = new texture;
 	otex->width = 2048;
 	otex->height = 1024;
@@ -208,9 +220,11 @@ int main(int argc, char* argv[])
 					case 4: otex->buff[(j+otex->width/2) + (i)*otex->width]=p; break;
 					case 5: otex->buff[(j) + (i)*otex->width]=p; break;
 				}
-			}	
-		}	
+			}
+		}
 	}
 	*/
 	savetgatexture(otex,"uffizi_cros.tga",0);
+
+	return 0;
 }
