@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="png">
+  <VirtualDirectory Name="png">
+    <VirtualDirectory Name="libs">
+      <VirtualDirectory Name="libpng">
+        <File Name="../../libs/libpng/png.c"/>
+        <File Name="../../libs/libpng/png.h"/>
+        <File Name="../../libs/libpng/pngconf.h"/>
+        <File Name="../../libs/libpng/pngdebug.h"/>
+        <File Name="../../libs/libpng/pngerror.c"/>
+        <File Name="../../libs/libpng/pngget.c"/>
+        <File Name="../../libs/libpng/pnginfo.h"/>
+        <File Name="../../libs/libpng/pnglibconf.h"/>
+        <File Name="../../libs/libpng/pngmem.c"/>
+        <File Name="../../libs/libpng/pngpread.c"/>
+        <File Name="../../libs/libpng/pngpriv.h"/>
+        <File Name="../../libs/libpng/pngread.c"/>
+        <File Name="../../libs/libpng/pngrio.c"/>
+        <File Name="../../libs/libpng/pngrtran.c"/>
+        <File Name="../../libs/libpng/pngrutil.c"/>
+        <File Name="../../libs/libpng/pngset.c"/>
+        <File Name="../../libs/libpng/pngstruct.h"/>
+        <File Name="../../libs/libpng/pngtest.c"/>
+        <File Name="../../libs/libpng/pngtrans.c"/>
+        <File Name="../../libs/libpng/pngwio.c"/>
+        <File Name="../../libs/libpng/pngwrite.c"/>
+        <File Name="../../libs/libpng/pngwtran.c"/>
+        <File Name="../../libs/libpng/pngwutil.c"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Settings Type="Static Library">
+    <Configuration Name="Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
+      <General OutputFile="../../libs/libpng/lib/libpng.a" IntermediateDirectory="obj/Debug/png" Command="./libpng.a" CommandArguments="" WorkingDirectory="../../libs/libpng/lib" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-g">
+        <IncludePath Value="../../libs/zlib"/>
+        <Preprocessor Value="DEBUG"/>
+      </Compiler>
+      <Linker Required="yes" Options="">
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
+      <General OutputFile="../../libs/libpng/lib/libpng.a" IntermediateDirectory="obj/Release/png" Command="./libpng.a" CommandArguments="" WorkingDirectory="../../libs/libpng/lib" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../libs/zlib"/>
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Required="yes" Options="-s">
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <Dependencies name="Debug">
+  </Dependencies>
+  <Dependencies name="Release">
+  </Dependencies>
+</CodeLite_Project>

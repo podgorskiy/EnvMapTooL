@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="png" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../libs/libpng/lib/libpng.a" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Debug/png" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DDEBUG" />
+					<Add directory="../../libs/zlib" />
+				</Compiler>
+				<Linker>
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../../libs/libpng/lib/libpng.a" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Release/png" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DNDEBUG" />
+					<Add directory="../../libs/zlib" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="../../libs/libpng/pngdebug.h">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pnginfo.h">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngstruct.h">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pnglibconf.h">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/png.h">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngconf.h">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngpriv.h">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngwio.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngset.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngtrans.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngget.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/png.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngtest.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngrutil.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngread.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngwtran.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngmem.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngrio.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngrtran.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngerror.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngwrite.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngpread.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Unit filename="../../libs/libpng/pngwutil.c">
+			<Option virtualFolder="libs/libpng" />
+		</Unit>
+		<Extensions>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
+

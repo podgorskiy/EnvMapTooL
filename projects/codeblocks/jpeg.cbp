@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="jpeg" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../libs/libjpeg/lib/libjpeg.a" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Debug/jpeg" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DDEBUG" />
+					<Add directory="../../libs/zlib" />
+				</Compiler>
+				<Linker>
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../../libs/libjpeg/lib/libjpeg.a" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Release/jpeg" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DNDEBUG" />
+					<Add directory="../../libs/zlib" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="../../libs/libjpeg/jinclude.h">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/transupp.h">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jversion.h">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdhuff.h">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jpeglib.h">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jmorecfg.h">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/cderror.h">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/cdjpeg.h">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jerror.h">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdct.h">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jconfig.h">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jchuff.h">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jpegint.h">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/rdcolmap.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/transupp.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jccolor.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdinput.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jutils.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdmarker.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/rdppm.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/wrrle.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/rdrle.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdpostct.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jerror.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jccoefct.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/ansi2knr.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/wrppm.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/cdjpeg.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdapistd.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/rdjpgcom.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jidctred.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/ckconfig.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jidctflt.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jcapistd.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jquant2.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdsample.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jidctfst.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jpegtran.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdapimin.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jfdctint.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jctrans.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jchuff.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/example.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jcphuff.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jcmarker.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jcapimin.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdphuff.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/wrbmp.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jcparam.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdcolor.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/rdtarga.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jcdctmgr.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jfdctfst.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/djpeg.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jcinit.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/rdswitch.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdtrans.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdhuff.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jquant1.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdatadst.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/wrjpgcom.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jcsample.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jcomapi.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdmainct.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdatasrc.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/wrtarga.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/rdgif.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jcmainct.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/wrgif.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jfdctflt.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jcmaster.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jddctmgr.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jcprepct.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jidctint.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdmaster.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdmerge.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/rdbmp.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Unit filename="../../libs/libjpeg/jdcoefct.c">
+			<Option virtualFolder="libs/libjpeg" />
+		</Unit>
+		<Extensions>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
+

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="zlib">
+  <VirtualDirectory Name="zlib">
+    <VirtualDirectory Name="libs">
+      <VirtualDirectory Name="zlib">
+        <File Name="../../libs/zlib/adler32.c"/>
+        <File Name="../../libs/zlib/compress.c"/>
+        <File Name="../../libs/zlib/crc32.c"/>
+        <File Name="../../libs/zlib/crc32.h"/>
+        <File Name="../../libs/zlib/deflate.c"/>
+        <File Name="../../libs/zlib/deflate.h"/>
+        <File Name="../../libs/zlib/gzclose.c"/>
+        <File Name="../../libs/zlib/gzguts.h"/>
+        <File Name="../../libs/zlib/gzlib.c"/>
+        <File Name="../../libs/zlib/gzread.c"/>
+        <File Name="../../libs/zlib/gzwrite.c"/>
+        <File Name="../../libs/zlib/infback.c"/>
+        <File Name="../../libs/zlib/inffast.c"/>
+        <File Name="../../libs/zlib/inffast.h"/>
+        <File Name="../../libs/zlib/inffixed.h"/>
+        <File Name="../../libs/zlib/inflate.c"/>
+        <File Name="../../libs/zlib/inflate.h"/>
+        <File Name="../../libs/zlib/inftrees.c"/>
+        <File Name="../../libs/zlib/inftrees.h"/>
+        <File Name="../../libs/zlib/trees.c"/>
+        <File Name="../../libs/zlib/trees.h"/>
+        <File Name="../../libs/zlib/uncompr.c"/>
+        <File Name="../../libs/zlib/zconf.h"/>
+        <File Name="../../libs/zlib/zlib.h"/>
+        <File Name="../../libs/zlib/zutil.c"/>
+        <File Name="../../libs/zlib/zutil.h"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Settings Type="Static Library">
+    <Configuration Name="Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
+      <General OutputFile="../../libs/zlib/lib/libzlib.a" IntermediateDirectory="obj/Debug/zlib" Command="./libzlib.a" CommandArguments="" WorkingDirectory="../../libs/zlib/lib" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-g">
+        <Preprocessor Value="DEBUG"/>
+      </Compiler>
+      <Linker Required="yes" Options="">
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
+      <General OutputFile="../../libs/zlib/lib/libzlib.a" IntermediateDirectory="obj/Release/zlib" Command="./libzlib.a" CommandArguments="" WorkingDirectory="../../libs/zlib/lib" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-O2">
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Required="yes" Options="-s">
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <Dependencies name="Debug">
+  </Dependencies>
+  <Dependencies name="Release">
+  </Dependencies>
+</CodeLite_Project>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Workspace Name="EnvMapTool" Database="./EnvMapTool.tags">
+  <Project Name="png" Path="png.project" Active="Yes" />
+  <Project Name="zlib" Path="zlib.project" Active="No" />
+  <Project Name="jpeg" Path="jpeg.project" Active="No" />
+  <Project Name="EnvMapTool" Path="EnvMapTool.project" Active="No" />
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Project Name="png" ConfigName="Debug"/>
+      <Project Name="zlib" ConfigName="Debug"/>
+      <Project Name="jpeg" ConfigName="Debug"/>
+      <Project Name="EnvMapTool" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Project Name="png" ConfigName="Release"/>
+      <Project Name="zlib" ConfigName="Release"/>
+      <Project Name="jpeg" ConfigName="Release"/>
+      <Project Name="EnvMapTool" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>

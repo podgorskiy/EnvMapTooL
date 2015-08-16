@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "png", "png.vcxproj", "{BDE4F583-E2E8-CA50-7530-FE35073BB64B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib.vcxproj", "{C05A44E1-B804-2576-61E5-1B97550BB21B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "jpeg.vcxproj", "{FD792614-BB6D-7B85-D431-9D27671B1029}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EnvMapTool", "EnvMapTool.vcxproj", "{F26BC4BC-C28A-2764-0B07-C683998FE17D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BDE4F583-E2E8-CA50-7530-FE35073BB64B} = {BDE4F583-E2E8-CA50-7530-FE35073BB64B}
+		{C05A44E1-B804-2576-61E5-1B97550BB21B} = {C05A44E1-B804-2576-61E5-1B97550BB21B}
+		{FD792614-BB6D-7B85-D431-9D27671B1029} = {FD792614-BB6D-7B85-D431-9D27671B1029}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BDE4F583-E2E8-CA50-7530-FE35073BB64B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BDE4F583-E2E8-CA50-7530-FE35073BB64B}.Debug|Win32.Build.0 = Debug|Win32
+		{BDE4F583-E2E8-CA50-7530-FE35073BB64B}.Release|Win32.ActiveCfg = Release|Win32
+		{BDE4F583-E2E8-CA50-7530-FE35073BB64B}.Release|Win32.Build.0 = Release|Win32
+		{C05A44E1-B804-2576-61E5-1B97550BB21B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C05A44E1-B804-2576-61E5-1B97550BB21B}.Debug|Win32.Build.0 = Debug|Win32
+		{C05A44E1-B804-2576-61E5-1B97550BB21B}.Release|Win32.ActiveCfg = Release|Win32
+		{C05A44E1-B804-2576-61E5-1B97550BB21B}.Release|Win32.Build.0 = Release|Win32
+		{FD792614-BB6D-7B85-D431-9D27671B1029}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FD792614-BB6D-7B85-D431-9D27671B1029}.Debug|Win32.Build.0 = Debug|Win32
+		{FD792614-BB6D-7B85-D431-9D27671B1029}.Release|Win32.ActiveCfg = Release|Win32
+		{FD792614-BB6D-7B85-D431-9D27671B1029}.Release|Win32.Build.0 = Release|Win32
+		{F26BC4BC-C28A-2764-0B07-C683998FE17D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F26BC4BC-C28A-2764-0B07-C683998FE17D}.Debug|Win32.Build.0 = Debug|Win32
+		{F26BC4BC-C28A-2764-0B07-C683998FE17D}.Release|Win32.ActiveCfg = Release|Win32
+		{F26BC4BC-C28A-2764-0B07-C683998FE17D}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

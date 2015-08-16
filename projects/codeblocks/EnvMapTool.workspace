@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="EnvMapTool">
+		<Project filename="png.cbp" active="1">
+		</Project>
+		<Project filename="zlib.cbp">
+		</Project>
+		<Project filename="jpeg.cbp">
+		</Project>
+		<Project filename="EnvMapTool.cbp">
+			<Depends filename="png.cbp" />
+			<Depends filename="zlib.cbp" />
+			<Depends filename="jpeg.cbp" />
+		</Project>
+	</Workspace>
+</CodeBlocks_workspace_file>

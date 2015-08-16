@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="jpeg">
+  <VirtualDirectory Name="jpeg">
+    <VirtualDirectory Name="libs">
+      <VirtualDirectory Name="libjpeg">
+        <File Name="../../libs/libjpeg/ansi2knr.c"/>
+        <File Name="../../libs/libjpeg/cderror.h"/>
+        <File Name="../../libs/libjpeg/cdjpeg.c"/>
+        <File Name="../../libs/libjpeg/cdjpeg.h"/>
+        <File Name="../../libs/libjpeg/ckconfig.c"/>
+        <File Name="../../libs/libjpeg/djpeg.c"/>
+        <File Name="../../libs/libjpeg/example.c"/>
+        <File Name="../../libs/libjpeg/jcapimin.c"/>
+        <File Name="../../libs/libjpeg/jcapistd.c"/>
+        <File Name="../../libs/libjpeg/jccoefct.c"/>
+        <File Name="../../libs/libjpeg/jccolor.c"/>
+        <File Name="../../libs/libjpeg/jcdctmgr.c"/>
+        <File Name="../../libs/libjpeg/jchuff.c"/>
+        <File Name="../../libs/libjpeg/jchuff.h"/>
+        <File Name="../../libs/libjpeg/jcinit.c"/>
+        <File Name="../../libs/libjpeg/jcmainct.c"/>
+        <File Name="../../libs/libjpeg/jcmarker.c"/>
+        <File Name="../../libs/libjpeg/jcmaster.c"/>
+        <File Name="../../libs/libjpeg/jcomapi.c"/>
+        <File Name="../../libs/libjpeg/jconfig.h"/>
+        <File Name="../../libs/libjpeg/jcparam.c"/>
+        <File Name="../../libs/libjpeg/jcphuff.c"/>
+        <File Name="../../libs/libjpeg/jcprepct.c"/>
+        <File Name="../../libs/libjpeg/jcsample.c"/>
+        <File Name="../../libs/libjpeg/jctrans.c"/>
+        <File Name="../../libs/libjpeg/jdapimin.c"/>
+        <File Name="../../libs/libjpeg/jdapistd.c"/>
+        <File Name="../../libs/libjpeg/jdatadst.c"/>
+        <File Name="../../libs/libjpeg/jdatasrc.c"/>
+        <File Name="../../libs/libjpeg/jdcoefct.c"/>
+        <File Name="../../libs/libjpeg/jdcolor.c"/>
+        <File Name="../../libs/libjpeg/jdct.h"/>
+        <File Name="../../libs/libjpeg/jddctmgr.c"/>
+        <File Name="../../libs/libjpeg/jdhuff.c"/>
+        <File Name="../../libs/libjpeg/jdhuff.h"/>
+        <File Name="../../libs/libjpeg/jdinput.c"/>
+        <File Name="../../libs/libjpeg/jdmainct.c"/>
+        <File Name="../../libs/libjpeg/jdmarker.c"/>
+        <File Name="../../libs/libjpeg/jdmaster.c"/>
+        <File Name="../../libs/libjpeg/jdmerge.c"/>
+        <File Name="../../libs/libjpeg/jdphuff.c"/>
+        <File Name="../../libs/libjpeg/jdpostct.c"/>
+        <File Name="../../libs/libjpeg/jdsample.c"/>
+        <File Name="../../libs/libjpeg/jdtrans.c"/>
+        <File Name="../../libs/libjpeg/jerror.c"/>
+        <File Name="../../libs/libjpeg/jerror.h"/>
+        <File Name="../../libs/libjpeg/jfdctflt.c"/>
+        <File Name="../../libs/libjpeg/jfdctfst.c"/>
+        <File Name="../../libs/libjpeg/jfdctint.c"/>
+        <File Name="../../libs/libjpeg/jidctflt.c"/>
+        <File Name="../../libs/libjpeg/jidctfst.c"/>
+        <File Name="../../libs/libjpeg/jidctint.c"/>
+        <File Name="../../libs/libjpeg/jidctred.c"/>
+        <File Name="../../libs/libjpeg/jinclude.h"/>
+        <File Name="../../libs/libjpeg/jmorecfg.h"/>
+        <File Name="../../libs/libjpeg/jpegint.h"/>
+        <File Name="../../libs/libjpeg/jpeglib.h"/>
+        <File Name="../../libs/libjpeg/jpegtran.c"/>
+        <File Name="../../libs/libjpeg/jquant1.c"/>
+        <File Name="../../libs/libjpeg/jquant2.c"/>
+        <File Name="../../libs/libjpeg/jutils.c"/>
+        <File Name="../../libs/libjpeg/jversion.h"/>
+        <File Name="../../libs/libjpeg/rdbmp.c"/>
+        <File Name="../../libs/libjpeg/rdcolmap.c"/>
+        <File Name="../../libs/libjpeg/rdgif.c"/>
+        <File Name="../../libs/libjpeg/rdjpgcom.c"/>
+        <File Name="../../libs/libjpeg/rdppm.c"/>
+        <File Name="../../libs/libjpeg/rdrle.c"/>
+        <File Name="../../libs/libjpeg/rdswitch.c"/>
+        <File Name="../../libs/libjpeg/rdtarga.c"/>
+        <File Name="../../libs/libjpeg/transupp.c"/>
+        <File Name="../../libs/libjpeg/transupp.h"/>
+        <File Name="../../libs/libjpeg/wrbmp.c"/>
+        <File Name="../../libs/libjpeg/wrgif.c"/>
+        <File Name="../../libs/libjpeg/wrjpgcom.c"/>
+        <File Name="../../libs/libjpeg/wrppm.c"/>
+        <File Name="../../libs/libjpeg/wrrle.c"/>
+        <File Name="../../libs/libjpeg/wrtarga.c"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Settings Type="Static Library">
+    <Configuration Name="Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
+      <General OutputFile="../../libs/libjpeg/lib/libjpeg.a" IntermediateDirectory="obj/Debug/jpeg" Command="./libjpeg.a" CommandArguments="" WorkingDirectory="../../libs/libjpeg/lib" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-g">
+        <IncludePath Value="../../libs/zlib"/>
+        <Preprocessor Value="DEBUG"/>
+      </Compiler>
+      <Linker Required="yes" Options="">
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
+      <General OutputFile="../../libs/libjpeg/lib/libjpeg.a" IntermediateDirectory="obj/Release/jpeg" Command="./libjpeg.a" CommandArguments="" WorkingDirectory="../../libs/libjpeg/lib" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../libs/zlib"/>
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Required="yes" Options="-s">
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <Dependencies name="Debug">
+  </Dependencies>
+  <Dependencies name="Release">
+  </Dependencies>
+</CodeLite_Project>

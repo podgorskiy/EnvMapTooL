@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="zlib" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../libs/zlib/lib/libzlib.a" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Debug/zlib" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DDEBUG" />
+				</Compiler>
+				<Linker>
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../../libs/zlib/lib/libzlib.a" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Release/zlib" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DNDEBUG" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="../../libs/zlib/zutil.h">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/zlib.h">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/trees.h">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/zconf.h">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/inflate.h">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/inffixed.h">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/inffast.h">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/crc32.h">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/gzguts.h">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/inftrees.h">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/deflate.h">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/inflate.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/compress.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/trees.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/inftrees.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/uncompr.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/gzwrite.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/crc32.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/adler32.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/gzlib.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/deflate.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/gzread.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/inffast.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/zutil.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/gzclose.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Unit filename="../../libs/zlib/infback.c">
+			<Option virtualFolder="libs/zlib" />
+		</Unit>
+		<Extensions>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
+

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="libs">
+      <UniqueIdentifier>{655287F6-C716-8876-42F7-F80A18A0FB94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\libpng">
+      <UniqueIdentifier>{3EB70109-223B-3BBD-D261-738908D7E284}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\libs\libpng\pngdebug.h">
+      <Filter>libs\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libpng\pnginfo.h">
+      <Filter>libs\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libpng\pngstruct.h">
+      <Filter>libs\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libpng\pnglibconf.h">
+      <Filter>libs\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libpng\png.h">
+      <Filter>libs\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libpng\pngconf.h">
+      <Filter>libs\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libpng\pngpriv.h">
+      <Filter>libs\libpng</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\libs\libpng\pngwio.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngset.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngtrans.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngget.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\png.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngtest.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngrutil.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngread.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngwtran.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngmem.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngrio.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngrtran.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngerror.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngwrite.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngpread.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libpng\pngwutil.c">
+      <Filter>libs\libpng</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="libs">
+      <UniqueIdentifier>{041EE9AB-7FB0-CC41-7E14-79EF42EEA779}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\libjpeg">
+      <UniqueIdentifier>{8D28DD5E-0862-0665-3CC9-5629FF70C9F7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\libs\libjpeg\jinclude.h">
+      <Filter>libs\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libjpeg\transupp.h">
+      <Filter>libs\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libjpeg\jversion.h">
+      <Filter>libs\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libjpeg\jdhuff.h">
+      <Filter>libs\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libjpeg\jpeglib.h">
+      <Filter>libs\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libjpeg\jmorecfg.h">
+      <Filter>libs\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libjpeg\cderror.h">
+      <Filter>libs\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libjpeg\cdjpeg.h">
+      <Filter>libs\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libjpeg\jerror.h">
+      <Filter>libs\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libjpeg\jdct.h">
+      <Filter>libs\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libjpeg\jconfig.h">
+      <Filter>libs\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libjpeg\jchuff.h">
+      <Filter>libs\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\libjpeg\jpegint.h">
+      <Filter>libs\libjpeg</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\libs\libjpeg\rdcolmap.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\transupp.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jccolor.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdinput.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jutils.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdmarker.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\rdppm.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\wrrle.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\rdrle.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdpostct.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jerror.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jccoefct.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\ansi2knr.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\wrppm.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\cdjpeg.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdapistd.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\rdjpgcom.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jidctred.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\ckconfig.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jidctflt.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jcapistd.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jquant2.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdsample.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jidctfst.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jpegtran.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdapimin.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jfdctint.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jctrans.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jchuff.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\example.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jcphuff.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jcmarker.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jcapimin.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdphuff.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\wrbmp.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jcparam.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdcolor.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\rdtarga.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jcdctmgr.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jfdctfst.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\djpeg.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jcinit.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\rdswitch.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdtrans.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdhuff.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jquant1.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdatadst.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\wrjpgcom.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jcsample.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jcomapi.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdmainct.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdatasrc.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\wrtarga.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\rdgif.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jcmainct.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\wrgif.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jfdctflt.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jcmaster.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jddctmgr.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jcprepct.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jidctint.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdmaster.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdmerge.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\rdbmp.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\libjpeg\jdcoefct.c">
+      <Filter>libs\libjpeg</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
