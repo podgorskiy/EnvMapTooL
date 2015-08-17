@@ -7,7 +7,7 @@ typedef unsigned int DWORD;
 #include <iostream>
 #include <fstream>
 
-void Texture::LoadFromFile(const char* path)
+void Texture::LoadFromFile(const char* path, int face)
 {
 	std::ifstream fileStream(path,std::ios::binary);
 
@@ -17,7 +17,7 @@ void Texture::LoadFromFile(const char* path)
     fileStream.seekg(0);
 	if (magic == 0x20534444)
 	{
-        LoadDDStexture(fileStream);
+        LoadDDStexture(fileStream, face);
         return;
 	}
 
@@ -40,22 +40,22 @@ void Texture::LoadFromFile(const char* path)
         ( (tgaTest.pixel_depth == 1) || (tgaTest.pixel_depth == 8) || (tgaTest.pixel_depth == 24) || (tgaTest.pixel_depth == 32) )
     )
     {
-        LoadTARGAtexture(fileStream);
+        LoadTARGAtexture(fileStream, face);
         return;
     }
 }
 
-void Texture::SaveToFile(const char* path, IFileFormat* formatOptions)
+void Texture::SaveToFile(const char* path, IFileFormat* formatOptions, int face)
 {
 	std::ofstream  outputStream(path, std::ios::binary);
 	if ( ! outputStream) {
 		std::cout << "Error: Can not create output file" << std::endl;
 		return;
     }
-    formatOptions->SaveToFile(*this, outputStream);
+    formatOptions->SaveToFile(*this, outputStream, face);
 }
 
-void Texture::LoadDDStexture(std::istream& inputStream)
+void Texture::LoadDDStexture(std::istream& inputStream, int face)
 {
 	DWORD magic;
 	inputStream.read((char*)&magic,sizeof(DWORD));
@@ -85,21 +85,28 @@ void Texture::LoadDDStexture(std::istream& inputStream)
 		m_width = header.dwWidth;
 		m_height = header.dwHeight;
 		int countOfFaces = m_cubemap ? 6 : 1;
-		int size = m_width * m_height * countOfFaces;
-		m_buff.resize(size);
+		int size = m_width * m_height;
+
+        m_faces.resize(countOfFaces);
 
 		for (int k=0; k < countOfFaces; k++)
 		{
+            if (!m_cubemap)
+            {
+                k = face;
+            }
+
+			m_faces[k].m_buff.resize(size);
 			for (int j=m_height-1;j>=0;j--){
 				for (int i=m_width-1;i>=0;i--){
 					if (alpha){
 						apixel b;
 						inputStream.read((char*)&b,sizeof(apixel));
-						m_buff[i+j*m_width+m_width*m_height*k] = b;
+						m_faces[k].m_buff[i+j*m_width] = b;
 					}else{
 						pixel b;
 						inputStream.read((char*)&b,sizeof(pixel));
-						m_buff[i+j*m_width+m_width*m_height*k] = b;
+						m_faces[k].m_buff[i+j*m_width] = b;
 					}
 				}
 			}
@@ -123,26 +130,29 @@ void Texture::LoadDDStexture(std::istream& inputStream)
     }
 }
 
-void Texture::LoadTARGAtexture(std::istream& inputStream)
+void Texture::LoadTARGAtexture(std::istream& inputStream, int face)
 {
 	char buff[18];
 	inputStream.read(buff,18);
-	m_width  = *((short*)&buff[0xc]);
-	m_height = *((short*)&buff[0xe]);
+	if (face == 0)
+	{
+        m_width  = *((short*)&buff[0xc]);
+        m_height = *((short*)&buff[0xe]);
+	}
 	int size = m_width*m_height;
-	m_buff.resize(size);
-    for (int j=m_height-1;j>=0;j--)
+	m_faces[face].m_buff.resize(size);
+    for (int j=0;j<m_height;j++)
     {
-		for (int i=m_width-1;i>=0;i--)
+		for (int i=0;i<m_width;i++)
 		{
             pixel b;
 			inputStream.read((char*)&b,sizeof(pixel));
-			m_buff[i+j*m_width] = b;
+			m_faces[face].m_buff[i+j*m_width] = b;
 		}
     }
 }
 
-void TGAFile::SaveToFile(const Texture& tex, std::ostream& outputStream)
+void TGAFile::SaveToFile(const Texture& tex, std::ostream& outputStream, int face)
 {
 	char buff[18];
 	for (int i=0;i<18;buff[i++]=0);
@@ -159,7 +169,7 @@ void TGAFile::SaveToFile(const Texture& tex, std::ostream& outputStream)
 		{
             pixel b;
             fpixel f;
-            f = tex.m_buff[i+j*tex.m_width];
+            f = tex.m_faces[face].m_buff[i+j*tex.m_width];
             b = pixel(f.r * 255, f.g * 255, f.b * 255);
             outputStream.write((char*)(&b),sizeof(pixel));
         }
@@ -186,12 +196,12 @@ fpixel FetchTexture(const Texture& tex, double2 uv, int face)
 {
 	int i = 0, j = 0;
 	GetIndicesFromUV(uv, tex.m_width, tex.m_height, i, j);
-	return tex.m_buff[tex.m_width * tex.m_height * face + j + i*tex.m_width];
+	return tex.m_faces[face].m_buff[j + i*tex.m_width];
 }
 
 void WriteTexture(Texture& tex, double2 uv, int face, const fpixel& p)
 {
 	int i = 0, j = 0;
 	GetIndicesFromUV(uv, tex.m_width, tex.m_height, i, j);
-	tex.m_buff[tex.m_width * tex.m_height * face + j + i*tex.m_width] = p;
+	tex.m_faces[face].m_buff[j + i*tex.m_width] = p;
 }

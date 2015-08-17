@@ -7,8 +7,6 @@
 		</Project>
 		<Project filename="jpeg.cbp">
 		</Project>
-		<Project filename="targa.cbp">
-		</Project>
 		<Project filename="EnvMapTool.cbp">
 			<Depends filename="png.cbp" />
 			<Depends filename="zlib.cbp" />

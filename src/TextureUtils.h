@@ -11,28 +11,36 @@ class IFileFormat;
 class Texture
 {
 public:
-	std::vector<fpixel> m_buff;
+    struct Face
+    {
+        std::vector<fpixel> m_buff;
+    };
+    std::vector<Face> m_faces;
 	int m_width;
 	int m_height;
 	bool m_cubemap;
-    void LoadFromFile(const char* path);
-    void SaveToFile(const char* path, IFileFormat* formatOptions);
+    void LoadFromFile(const char* path, int face = 0);
+    void SaveToFile(const char* path, IFileFormat* formatOptions, int face = 0);
 
+    Texture():m_cubemap(false)
+    {
+        m_faces.resize(6);
+    };
 private:
-    void LoadDDStexture(std::istream& inputStream);
-    void LoadTARGAtexture(std::istream& inputStream);
+    void LoadDDStexture(std::istream& inputStream, int face);
+    void LoadTARGAtexture(std::istream& inputStream, int face);
 };
 
 class IFileFormat
 {
 public:
-    virtual void SaveToFile(const Texture& tex, std::ostream& outputStream) = 0;
+    virtual void SaveToFile(const Texture& tex, std::ostream& outputStream, int face) = 0;
 };
 
 class TGAFile: public IFileFormat
 {
 public:
-    virtual void SaveToFile(const Texture& tex, std::ostream& outputStream);
+    virtual void SaveToFile(const Texture& tex, std::ostream& outputStream, int face);
 };
 
 

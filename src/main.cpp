@@ -20,29 +20,68 @@ public:
     virtual void DoTask(const Texture& inputTex, Texture& outputTex);
 };
 
+class DummyAction: public IAction
+{
+public:
+    virtual void DoTask(const Texture& inputTex, Texture& outputTex)
+    {
+        outputTex = inputTex;
+    }
+};
+
 
 int main(int argc, char* argv[])
 {
 	TCLAP::CmdLine cmd("EnvMapTool. Stanislav Podgorskiy.", ' ', "0.1", true);
 
 	TCLAP::ValueArg<std::string> inputFileArg("i", "input", "The input texture file. Can be of the following formats: *.tga, *.png, *.dds", true, "", "Input file");
+	TCLAP::MultiArg<std::string> inputMultiFileArg("I", "inputSequence", "The input texture files for cube map. You need specify six files: xp, xn yp, yn, zp, zn. WARNING! All the files MUST be the same format and size!", true, "Input files");
 	TCLAP::ValueArg<std::string> outputFileArg("o", "output", "The output texture file.", true, "", "Output file");
+	TCLAP::MultiArg<std::string> outputMultiFileArg("O", "outputSequence", "The output texture files for cube map. You need specify six files: xp, xn yp, yn, zp, zn", true, "Output files");
 	TCLAP::ValueArg<std::string> outputFormatFileArg("f", "format", "Output texture file format. Can be one of the following \"TGA\", \"DDS\", \"PNG\". Default TGA.", false, "TGA", "Output format");
+	TCLAP::ValueArg<int> faceToWriteArg("F", "faceToWrite", "If cubemap texture is written to format that does not support faces, this face will be written", false, 0, "Face to write");
+
+    std::vector<std::string> allowed;
+		allowed.push_back("cube2sphere");
+		allowed.push_back("sphere2cube");
+		allowed.push_back("convert");
+		TCLAP::ValuesConstraint<std::string> allowedVals( allowed );
+
     TCLAP::UnlabeledValueArg<std::string>  actionLable( "action",
         "Action. Can be:\n"
         "\tcube2sphere - Converts cube map texture to spherical map\n"
         "\tsphere2cube - Converts spherical map texture to cube map\n"
-        "\tconvert - Do nothing. Just to convert txture from one format to other\n", true, "", "Action" );
+        "\tconvert - Do nothing. Just to convert txture from one format to other\n", true, "", &allowedVals );
 
     cmd.add(actionLable);
+    cmd.add(faceToWriteArg);
     cmd.add(outputFormatFileArg);
-    cmd.add(outputFileArg);
-    cmd.add(inputFileArg);
+    cmd.xorAdd(outputFileArg, outputMultiFileArg);
+    cmd.xorAdd(inputFileArg, inputMultiFileArg);
 	cmd.parse( argc, argv );
 
     Texture* inputTex = new Texture;
-    inputTex->LoadFromFile(inputFileArg.getValue().c_str());
 
+    if ( inputFileArg.isSet() )
+    {
+        inputTex->LoadFromFile(inputFileArg.getValue().c_str());
+    }
+    else if ( inputMultiFileArg.isSet() )
+    {
+        std::vector<std::string> files = inputMultiFileArg.getValue();
+        if(files.size() != 6)
+        {
+            printf("Error: You should specify exactly six input files.\n");
+            return 0;
+        }
+        int face = 0;
+        for(std::vector<std::string>::iterator it = files.begin(); it != files.end(); ++it)
+        {
+            inputTex->LoadFromFile(it->c_str(), face);
+            face++;
+        }
+        inputTex->m_cubemap = true;
+    }
 
     Texture* outputTex = new Texture;
     IFileFormat* format = NULL;
@@ -53,7 +92,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        printf("Error: Wrong output format!");
+        printf("Error: Wrong output format!\n");
         return 0;
     }
 
@@ -63,16 +102,49 @@ int main(int argc, char* argv[])
     {
         action = new CubeMap2Sphere;
     }
+    else if (actionString == "convert")
+    {
+        action = new DummyAction;
+    }
     else
     {
-        printf("Error: Wrong action!");
+        printf("Error: Wrong action!\n");
         return 0;
     }
 
     action->DoTask(*inputTex, *outputTex);
 
-	outputTex->SaveToFile(outputFileArg.getValue().c_str(), format);
-
+    if ( outputFileArg.isSet() )
+    {
+        int face = 0;
+        if(outputTex->m_cubemap)
+        {
+            face = faceToWriteArg.getValue();
+            face = face > 5 ? 5 : face;
+            face = face < 0 ? 0 : face;
+        }
+        outputTex->SaveToFile(outputFileArg.getValue().c_str(), format, face);
+    }
+    else if ( outputMultiFileArg.isSet() )
+    {
+        if(!outputTex->m_cubemap)
+        {
+            printf("Error: Can't output not a cube map to a sequence of files.\n");
+            return 0;
+        }
+        std::vector<std::string> files = outputMultiFileArg.getValue();
+        if(files.size() != 6)
+        {
+            printf("Error: You should specify exactly six output files.\n");
+            return 0;
+        }
+        int face = 0;
+        for(std::vector<std::string>::iterator it = files.begin(); it != files.end(); ++it)
+        {
+            outputTex->SaveToFile(it->c_str(), format, face);
+            face++;
+        }
+    }
 	return 0;
 }
 
@@ -80,12 +152,13 @@ void CubeMap2Sphere::DoTask(const Texture& inputTex, Texture& outputTex)
 {
     if (!inputTex.m_cubemap)
     {
-        printf("For this task required cubmap.");
+        printf("For this task required cubmap.\n");
+        return;
     }
 	outputTex.m_width = inputTex.m_width * 4;
 	outputTex.m_height = inputTex.m_height * 4;
 	int size = outputTex.m_width*outputTex.m_height;
-	outputTex.m_buff.resize(size);
+	outputTex.m_faces[0].m_buff.resize(size);
 
 	for (int i = 0;i<outputTex.m_height;i++)
 	{
