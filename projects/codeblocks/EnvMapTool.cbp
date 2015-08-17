@@ -5,6 +5,7 @@
 		<Option title="EnvMapTool" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="src/;" />
 		<Build>
 			<Target title="Debug">
 				<Option output="../../EnvMapTool" prefix_auto="0" extension_auto="0" />
@@ -12,6 +13,7 @@
 				<Option object_output="obj/Debug/EnvMapTool" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="-i uffizi_cros.dds" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DDEBUG" />
@@ -21,12 +23,12 @@
 					<Add directory="../../libs/libjpeg" />
 				</Compiler>
 				<Linker>
-					<Add directory="../../libs/libpng/lib" />
-					<Add directory="../../libs/zlib/lib" />
-					<Add directory="../../libs/libjpeg/lib" />
 					<Add library="png" />
 					<Add library="zlib" />
 					<Add library="jpeg" />
+					<Add directory="../../libs/libpng/lib" />
+					<Add directory="../../libs/zlib/lib" />
+					<Add directory="../../libs/libjpeg/lib" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -44,38 +46,39 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add directory="../../libs/libpng/lib" />
-					<Add directory="../../libs/zlib/lib" />
-					<Add directory="../../libs/libjpeg/lib" />
 					<Add library="png" />
 					<Add library="zlib" />
 					<Add library="jpeg" />
+					<Add directory="../../libs/libpng/lib" />
+					<Add directory="../../libs/zlib/lib" />
+					<Add directory="../../libs/libjpeg/lib" />
 				</Linker>
 			</Target>
 		</Build>
+		<Unit filename="../../src/CoordinateTransform.cpp">
+			<Option virtualFolder="src" />
+		</Unit>
+		<Unit filename="../../src/CoordinateTransform.h">
+			<Option virtualFolder="src" />
+		</Unit>
+		<Unit filename="../../src/EnvMapMath.h">
+			<Option virtualFolder="src" />
+		</Unit>
+		<Unit filename="../../src/TextureUtils.cpp">
+			<Option virtualFolder="src" />
+		</Unit>
 		<Unit filename="../../src/TextureUtils.h">
 			<Option virtualFolder="src" />
 		</Unit>
 		<Unit filename="../../src/dds.h">
 			<Option virtualFolder="src" />
 		</Unit>
-		<Unit filename="../../src/EnvMapMath.h">
-			<Option virtualFolder="src" />
-		</Unit>
-		<Unit filename="../../src/CoordinateTransform.h">
-			<Option virtualFolder="src" />
-		</Unit>
 		<Unit filename="../../src/main.cpp">
 			<Option virtualFolder="src" />
 		</Unit>
-		<Unit filename="../../src/TextureUtils.cpp">
-			<Option virtualFolder="src" />
-		</Unit>
-		<Unit filename="../../src/CoordinateTransform.cpp">
-			<Option virtualFolder="src" />
-		</Unit>
 		<Extensions>
+			<code_completion />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
-

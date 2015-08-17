@@ -8,42 +8,106 @@
 #include <algorithm>
 #include <tclap/CmdLine.h>
 
+class IAction
+{
+public:
+    virtual void DoTask(const Texture& inputTex, Texture& outputTex) = 0;
+};
+
+class CubeMap2Sphere: public IAction
+{
+public:
+    virtual void DoTask(const Texture& inputTex, Texture& outputTex);
+};
+
 
 int main(int argc, char* argv[])
 {
-	TCLAP::CmdLine cmd("EnvMapTool. Stanislav Podgorskiy.", ' ', "0.1", false);
+	TCLAP::CmdLine cmd("EnvMapTool. Stanislav Podgorskiy.", ' ', "0.1", true);
 
-	TCLAP::ValueArg<std::string> inputFileArg("i", "input", "The input texture file. Can be of the following formats: *.tga, *.png, .*ddse", true, "", "Input file");
-	cmd.add(inputFileArg);
+	TCLAP::ValueArg<std::string> inputFileArg("i", "input", "The input texture file. Can be of the following formats: *.tga, *.png, *.dds", true, "", "Input file");
+	TCLAP::ValueArg<std::string> outputFileArg("o", "output", "The output texture file.", true, "", "Output file");
+	TCLAP::ValueArg<std::string> outputFormatFileArg("f", "format", "Output texture file format. Can be one of the following \"TGA\", \"DDS\", \"PNG\". Default TGA.", false, "TGA", "Output format");
+    TCLAP::UnlabeledValueArg<std::string>  actionLable( "action",
+        "Action. Can be:\n"
+        "\tcube2sphere - Converts cube map texture to spherical map\n"
+        "\tsphere2cube - Converts spherical map texture to cube map\n"
+        "\tconvert - Do nothing. Just to convert txture from one format to other\n", true, "", "Action" );
 
+    cmd.add(actionLable);
+    cmd.add(outputFormatFileArg);
+    cmd.add(outputFileArg);
+    cmd.add(inputFileArg);
 	cmd.parse( argc, argv );
 
-	double rad=0.002f;
-	int iter = 10;
+    Texture* inputTex = new Texture;
+    inputTex->LoadFromFile(inputFileArg.getValue().c_str());
 
-	texture* tex =  loadddstexture(inputFileArg.getValue().c_str());
-	texture* otex = new texture;
-	otex->width = tex->width * 4;
-	otex->height = tex->height * 4;
-	int size = otex->width*otex->height;
-	otex->buff = new pixel[size];
 
-	for (int i = 0;i<otex->height;i++)
+    Texture* outputTex = new Texture;
+    IFileFormat* format = NULL;
+    std::string formatString = outputFormatFileArg.getValue();
+    if (formatString == "TGA")
+    {
+        format = new TGAFile;
+    }
+    else
+    {
+        printf("Error: Wrong output format!");
+        return 0;
+    }
+
+    IAction* action = NULL;
+    std::string actionString = actionLable.getValue();
+    if (actionString == "cube2sphere")
+    {
+        action = new CubeMap2Sphere;
+    }
+    else
+    {
+        printf("Error: Wrong action!");
+        return 0;
+    }
+
+    action->DoTask(*inputTex, *outputTex);
+
+	outputTex->SaveToFile(outputFileArg.getValue().c_str(), format);
+
+	return 0;
+}
+
+void CubeMap2Sphere::DoTask(const Texture& inputTex, Texture& outputTex)
+{
+    if (!inputTex.m_cube)
+    {
+        printf("For this task required cubmap.");
+    }
+	outputTex.m_width = inputTex.m_width * 4;
+	outputTex.m_height = inputTex.m_height * 4;
+	int size = outputTex.m_width*outputTex.m_height;
+	outputTex.m_buff.resize(size);
+
+	for (int i = 0;i<outputTex.m_height;i++)
 	{
-		for (int j = 0;j<otex->width;j++)
+		for (int j = 0;j<outputTex.m_width;j++)
 		{
-			double2 uv = GetUVFromIndices(otex->width, otex->height, i, j);
+			double2 uv = GetUVFromIndices(outputTex.m_width, outputTex.m_height, i, j);
 			double3 v;
 			bool valid = spheruv2v(uv, v);
 			int face;
 			double2 uv_ = cube2uv(v,&face);
-			pixel p = FetchTexture( tex, uv_, face);
+			fpixel p = FetchTexture(inputTex, uv_, face);
 			p *= valid;
-			WriteTexture(otex, uv, 0, p);
+			WriteTexture(outputTex, uv, 0, p);
 		}
 	}
+}
 
 	/*
+	double rad=0.002f;
+	int iter = 10;
+
+
 	texture* otex = new texture;
 	otex->width = tex->width*4;
 	otex->height = tex->height*2;
@@ -224,7 +288,5 @@ int main(int argc, char* argv[])
 		}
 	}
 	*/
-	savetgatexture(otex,"uffizi_cros.tga",0);
 
-	return 0;
-}
+

@@ -1,17 +1,17 @@
 #pragma once
 #include <cmath>
 
-struct pixel 
+struct pixel
 {
 	unsigned char r,g,b;
 	pixel():r(0),g(0),b(0){};
 	pixel(char r, char g, char b):r(r),g(g),b(b){};
-	void operator += (const pixel& a){	r += a.r; g += a.g; b += a.b;}		
-	void operator *= (const double& a){	
-		r = static_cast<unsigned char>(r * a); 
-		g = static_cast<unsigned char>(g * a); 
-		b = static_cast<unsigned char>(b * a); 
-	}	
+	void operator += (const pixel& a){	r += a.r; g += a.g; b += a.b;}
+	void operator *= (const double& a){
+		r = static_cast<unsigned char>(r * a);
+		g = static_cast<unsigned char>(g * a);
+		b = static_cast<unsigned char>(b * a);
+	}
 };
 
 struct apixel {
@@ -25,10 +25,11 @@ struct fpixel {
 	double r,g,b;
 	fpixel():r(0),g(0),b(0){};
 	fpixel(double r, double g, double b):r(r),g(g),b(b){};
-	fpixel(pixel p) : r(p.r/255.0f), g(p.g/255.0f), b(p.b/255.0f) {}		
-	void operator += (const fpixel& v){	r += v.r; g += v.g; b += v.b;}	
-	void operator += (const double& v){	r += v; g += v; b += v;}	
-	void operator *= (const double& a){	r *= a; g *= a; b *=a;}	
+	fpixel(pixel p) : r(p.r/255.0f), g(p.g/255.0f), b(p.b/255.0f) {}
+	fpixel(apixel p) : r(p.r/255.0f), g(p.g/255.0f), b(p.b/255.0f) {}
+	void operator += (const fpixel& v){	r += v.r; g += v.g; b += v.b;}
+	void operator += (const double& v){	r += v; g += v; b += v;}
+	void operator *= (const double& a){	r *= a; g *= a; b *=a;}
 	void operator *= (const fpixel& p){	r *= p.r; g *= p.g; b *=p.b;}
 	void Set (const double& x){r=x;g=x;b=x;}
 	void Set (const double& xr, const double& xg, const double& xb){r=xr;g=xg;b=xb;}
@@ -46,20 +47,20 @@ struct double3
 	/// Default constructor does nothing (for performance).
 	double3() {}
 	/// Construct using coordinates.
-	double3(double x, double y, double z) : x(x), y(y), z(z) {}		
+	double3(double x, double y, double z) : x(x), y(y), z(z) {}
 	/// Set this vector to some specified coordinates.
 	void Set(const double& x_, const double& y_, const double& z_) { x = x_; y = y_; z = z_;}
 	/// Negate this vector.
-	double3 operator -() const { double3 v; v.Set(-x, -y, -z); return v; }	
+	double3 operator -() const { double3 v; v.Set(-x, -y, -z); return v; }
 	/// Add a vector to this vector.
-	void operator += (const double3& v){	x += v.x; y += v.y; z += v.z;}	
+	void operator += (const double3& v){	x += v.x; y += v.y; z += v.z;}
 	/// Subtract a vector from this vector.
 	void operator -= (const double3& v){	x -= v.x; y -= v.y; z -= v.z;}
 	/// Multiply this vector by a scalar.
 	void operator *= (const double& a){	x *= a; y *= a; z *=a;}
 	/// Get the length of this vector (the norm).
 	double Length() const{ return sqrt(x * x + y * y + z * z);}
-	/// Get the length squared. 
+	/// Get the length squared.
 	double Length2() const{ return x * x + y * y + z * z;}
 	/// Convert this vector into a unit vector. Returns the length.
 	void Normalize()
@@ -85,12 +86,12 @@ struct double3
 	double x, y, z;
 };
 
-inline double3 operator + (const double3& a, const double3& b){	return double3(a.x + b.x, a.y + b.y, a.z + b.z);};	
-inline double3 operator - (const double3& a, const double3& b){	return double3(a.x - b.x, a.y - b.y, a.z - b.z);};	
-inline double3 operator * (const double a, const double3& b){	return double3(a * b.x, a * b.y, a * b.z);};	
+inline double3 operator + (const double3& a, const double3& b){	return double3(a.x + b.x, a.y + b.y, a.z + b.z);};
+inline double3 operator - (const double3& a, const double3& b){	return double3(a.x - b.x, a.y - b.y, a.z - b.z);};
+inline double3 operator * (const double a, const double3& b){	return double3(a * b.x, a * b.y, a * b.z);};
 inline double3 operator * (const double3& b, double a){	return double3(a * b.x, a * b.y, a * b.z);};
 inline double3 operator / (const double3& a, double b){	return double3(a.x / b, a.y / b, a.z / b);};
-inline double dot (const double3& a, const double3& b){	return a.x * b.x + a.y * b.y + a.z * b.z;};		
+inline double dot (const double3& a, const double3& b){	return a.x * b.x + a.y * b.y + a.z * b.z;};
 
 template<typename T>
 inline T clamp(const T&, double a, double b);
@@ -145,7 +146,7 @@ inline unsigned long xorshf96(void) {          //period 2^96-1
 
 inline float fastNormal(float sigma)
 {
-	int x = 
+	int x =
 		(xorshf96() % 256) +
 		(xorshf96() % 256) +
 		(xorshf96() % 256) +

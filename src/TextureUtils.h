@@ -1,23 +1,45 @@
 #pragma once
 
-struct pixel;
-struct double2;
+#include <vector>
+#include <iostream>
 
-struct texture{
-	pixel* buff;
-	int width;
-	int height;
+struct pixel;
+struct fpixel;
+struct double2;
+class IFileFormat;
+
+class Texture
+{
+public:
+	std::vector<fpixel> m_buff;
+	int m_width;
+	int m_height;
+	bool m_cubemap;
+    void LoadFromFile(const char* path);
+    void SaveToFile(const char* path, IFileFormat* formatOptions);
+
+private:
+    void LoadDDStexture(std::istream& inputStream);
+    void LoadTARGAtexture(std::istream& inputStream);
 };
 
-texture* loadddstexture(const char* path);
-texture* loadtgatexture(const char* path);
-int savetgatexture(texture* tex, const char* path,int image);
+class IFileFormat
+{
+public:
+    virtual void SaveToFile(const Texture& tex, std::ostream& outputStream) = 0;
+};
+
+class TGAFile: public IFileFormat
+{
+public:
+    virtual void SaveToFile(const Texture& tex, std::ostream& outputStream);
+};
 
 
 void GetIndicesFromUV(const double2& uv, int width, int height, int& i, int& j);
 
 double2 GetUVFromIndices(int width, int height, int i, int j);
 
-pixel FetchTexture(const texture* tex, double2 uv, int face);
+fpixel FetchTexture(const Texture& tex, double2 uv, int face);
 
-void WriteTexture(texture* tex, double2 uv, int face, const pixel& p);
+void WriteTexture(Texture& tex, double2 uv, int face, const fpixel& p);

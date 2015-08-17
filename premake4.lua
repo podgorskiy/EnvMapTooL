@@ -7,6 +7,7 @@ solution "EnvMapTool"
    include "libs/libpng"
    include "libs/zlib"
    include "libs/libjpeg"
+   include "libs/targa"
    
    project "EnvMapTool"
       kind "ConsoleApp"
