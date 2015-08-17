@@ -279,8 +279,8 @@ BY ANY OTHER PARTY.
      extern char *malloc();
      extern void free();
 #  else
-     extern char *malloc();
-     extern int free();
+     //extern char *malloc();
+     //extern int free();
 #  endif
 # endif
 

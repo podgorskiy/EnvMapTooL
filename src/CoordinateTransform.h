@@ -10,13 +10,10 @@ enum ENVMAP_FACES
 	ENVMAP_NEGATIVEZ
 };
 
-//Функция преобразования вектора отражения в текстурные координаты для сферической текстуры
+//Functions that transforms 3d direction to spherical 2d coordinates and vica versa
 double2 v2spheruv(double3 IN);
 bool spheruv2v(double2 IN, double3& v);
 
-//Функция преобразования вектора отражения в текстурные координаты для кубической текстуры
-double2 scube2uv(double3 IN);
-
-//Функция преобразования вектора отражения в текстурные координаты для кубической текстуры
+//Functions that transforms 3d direction to cubemap 2d coordinates and vica versa
 double2 cube2uv(double3 IN, int* n);
 double3 uv2cube(double2 uv, int n);

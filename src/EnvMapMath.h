@@ -31,6 +31,7 @@ struct fpixel {
 	void operator += (const double& v){	r += v; g += v; b += v;}
 	void operator *= (const double& a){	r *= a; g *= a; b *=a;}
 	void operator *= (const fpixel& p){	r *= p.r; g *= p.g; b *=p.b;}
+	void operator /= (const double& a){	r /= a; g /= a; b /=a;}
 	void Set (const double& x){r=x;g=x;b=x;}
 	void Set (const double& xr, const double& xg, const double& xb){r=xr;g=xg;b=xb;}
 };

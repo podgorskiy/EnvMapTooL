@@ -26,6 +26,12 @@ public:
     virtual void DoTask(const Texture& inputTex, Texture& outputTex);
 };
 
+class BlurCubemap: public IAction
+{
+public:
+    virtual void DoTask(const Texture& inputTex, Texture& outputTex);
+};
+
 class DummyAction: public IAction
 {
 public:
@@ -50,6 +56,7 @@ int main(int argc, char* argv[])
     std::vector<std::string> allowed;
 		allowed.push_back("cube2sphere");
 		allowed.push_back("sphere2cube");
+		allowed.push_back("blurCubemap");
 		allowed.push_back("convert");
 		TCLAP::ValuesConstraint<std::string> allowedVals( allowed );
 
@@ -57,6 +64,7 @@ int main(int argc, char* argv[])
         "Action. Can be:\n"
         "\tcube2sphere - Converts cube map texture to spherical map\n"
         "\tsphere2cube - Converts spherical map texture to cube map\n"
+        "\tblurCubemap - Gaussian blur of cubemap\n"
         "\tconvert - Do nothing. Just to convert txture from one format to other\n", true, "", &allowedVals );
 
     cmd.add(actionLable);
@@ -111,6 +119,10 @@ int main(int argc, char* argv[])
     else if (actionString == "sphere2cube")
     {
         action = new Sphere2CubeMap;
+    }
+    else if (actionString == "blurCubemap")
+    {
+        action = new BlurCubemap;
     }
     else if (actionString == "convert")
     {
@@ -207,6 +219,46 @@ void Sphere2CubeMap::DoTask(const Texture& inputTex, Texture& outputTex)
                 double3 v = uv2cube(uv, k);
                 double2 sphereUv = v2spheruv(v);
                 fpixel p = FetchTexture(inputTex, sphereUv, 0);
+                WriteTexture(outputTex, uv, k, p);
+            }
+        }
+    }
+    outputTex.m_cubemap = true;
+}
+
+void BlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
+{
+    if (!inputTex.m_cubemap)
+    {
+        printf("Error: For this task required cubmap.\n");
+        return;
+    }
+    float s = 0.1;
+	outputTex.m_width = inputTex.m_width;
+	outputTex.m_height = inputTex.m_height;
+	int size = outputTex.m_width*outputTex.m_height;
+	for(int k = 0; k <6; ++k)
+	{
+        outputTex.m_faces[k].m_buff.resize(size);
+        for (int i = 0;i<outputTex.m_height;i++)
+        {
+            for (int j = 0;j<outputTex.m_width;j++)
+            {
+                double2 uv = GetUVFromIndices(outputTex.m_width, outputTex.m_height, i, j);
+                double3 v = uv2cube(uv, k);
+                fpixel p(0.0,0.0,0.0);
+                int iterationCount = 100;
+                for (int it = 0; it < iterationCount; ++it)
+                {
+                    double3 noise(fastNormal(s), fastNormal(s), fastNormal(s));
+                    double3 v_ = v;
+                    v_ += noise;
+                    v_.Normalize();
+                    int face = 0;
+                    double2 uv_ = cube2uv(v_, &face);
+                    p += FetchTexture(inputTex, uv_, face);
+                }
+                p /= iterationCount;
                 WriteTexture(outputTex, uv, k, p);
             }
         }
