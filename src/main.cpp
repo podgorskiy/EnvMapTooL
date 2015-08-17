@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 
 void CubeMap2Sphere::DoTask(const Texture& inputTex, Texture& outputTex)
 {
-    if (!inputTex.m_cube)
+    if (!inputTex.m_cubemap)
     {
         printf("For this task required cubmap.");
     }
