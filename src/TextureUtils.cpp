@@ -99,15 +99,18 @@ void Texture::LoadDDStexture(std::istream& inputStream, int face)
 			m_faces[k].m_buff.resize(size);
 			for (int j=m_height-1;j>=0;j--){
 				for (int i=m_width-1;i>=0;i--){
+                    fpixel f;
 					if (alpha){
 						apixel b;
 						inputStream.read((char*)&b,sizeof(apixel));
-						m_faces[k].m_buff[i+j*m_width] = b;
+						f = b;
 					}else{
 						pixel b;
 						inputStream.read((char*)&b,sizeof(pixel));
-						m_faces[k].m_buff[i+j*m_width] = b;
+						f = b;
 					}
+					f.Pow(2.2);
+					m_faces[k].m_buff[i+j*m_width] = f;
 				}
 			}
 
@@ -146,8 +149,11 @@ void Texture::LoadTARGAtexture(std::istream& inputStream, int face)
 		for (int i=0;i<m_width;i++)
 		{
             pixel b;
+            fpixel f;
 			inputStream.read((char*)&b,sizeof(pixel));
-			m_faces[face].m_buff[i+j*m_width] = b;
+			f = b;
+            f.Pow(2.2);
+			m_faces[face].m_buff[i+j*m_width] = f;
 		}
     }
 }
@@ -170,6 +176,7 @@ void TGAFile::SaveToFile(const Texture& tex, std::ostream& outputStream, int fac
             pixel b;
             fpixel f;
             f = tex.m_faces[face].m_buff[i+j*tex.m_width];
+            f.Pow(1.0/2.2);
             b = pixel(f.r * 255, f.g * 255, f.b * 255);
             outputStream.write((char*)(&b),sizeof(pixel));
         }

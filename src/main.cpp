@@ -247,17 +247,29 @@ void BlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
                 double2 uv = GetUVFromIndices(outputTex.m_width, outputTex.m_height, i, j);
                 double3 v = uv2cube(uv, k);
                 fpixel p(0.0,0.0,0.0);
-                int iterationCount = 100;
-                for (int it = 0; it < iterationCount; ++it)
+                int iterationCount = 5;
+                for (int itx = 0; itx < iterationCount; ++itx)
                 {
-                    double3 noise(fastNormal(s), fastNormal(s), fastNormal(s));
-                    double3 v_ = v;
-                    v_ += noise;
-                    v_.Normalize();
-                    int face = 0;
-                    double2 uv_ = cube2uv(v_, &face);
-                    p += FetchTexture(inputTex, uv_, face);
+                    for (int ity = 0; ity < iterationCount; ++ity)
+                    {
+                        for (int itz = 0; itz < iterationCount; ++itz)
+                        {
+                            double3 noise(
+                                fastNormal(itx * (1.0/iterationCount), (itx+1) * (1.0/iterationCount)),
+                                fastNormal(ity * (1.0/iterationCount), (ity+1) * (1.0/iterationCount)),
+                                fastNormal(itz * (1.0/iterationCount), (itz+1) * (1.0/iterationCount))
+                                );
+                            double3 v_ = v;
+                            v_ += noise * s;
+                            v_.Normalize();
+                            int face = 0;
+                            double2 uv_ = cube2uv(v_, &face);
+                            p += FetchTexture(inputTex, uv_, face);
+                        }
+                    }
                 }
+                p /= iterationCount;
+                p /= iterationCount;
                 p /= iterationCount;
                 WriteTexture(outputTex, uv, k, p);
             }
