@@ -29,7 +29,7 @@ double2 cube2uv(double3 IN, int* n)
 {
 	double2 uv;
 	double3 inSQ=IN;
-	
+
 	if (inSQ.x<0)
 	{
 		inSQ.x=-inSQ.x;
@@ -42,10 +42,10 @@ double2 cube2uv(double3 IN, int* n)
 	{
 		inSQ.z=-inSQ.z;
 	}
-	
+
 	uv.x=0.5;
 	uv.y=0.5;
-	
+
 	if (inSQ.x>=inSQ.y&&inSQ.x>=inSQ.z)
 	{
 		if (IN.x>0)
@@ -61,7 +61,7 @@ double2 cube2uv(double3 IN, int* n)
 			uv.y+=IN.y/IN.x*0.5;
 		}
 	}
-	
+
 	if (inSQ.y>inSQ.x&&inSQ.y>=inSQ.z)
 	{
 		if(IN.y>0)
@@ -143,5 +143,6 @@ double3 uv2cube(double2 uv, int n)
 			v.y = v.z*(2*uv.y - 1.0);
 		}
 	}
+	v.Normalize();
 	return v;
 }
