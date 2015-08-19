@@ -191,6 +191,19 @@ void GetIndicesFromUV(const double2& uv, int width, int height, int& i, int& j)
 	i = height - 1 - Round(uv_.y * (height - 1));
 }
 
+void GetIndicesFromUV(const double2& uv, int width, int height, int& il, int& jl, int& ih, int& jh, double& wi, double& wj)
+{
+	double2 uv_ = clamp(uv, 0.0f, 1.0f);
+	double j = uv_.x * (width - 1);
+	double i = height - 1 - uv_.y * (height - 1);
+    il = static_cast<int>(floor(i));
+    ih = static_cast<int>(ceil(i));
+    jl = static_cast<int>(floor(j));
+    jh = static_cast<int>(ceil(j));
+    wi = i - il;
+    wj = j - jl;
+}
+
 double2 GetUVFromIndices(int width, int height, int i, int j)
 {
 	return double2(
@@ -201,9 +214,19 @@ double2 GetUVFromIndices(int width, int height, int i, int j)
 
 fpixel FetchTexture(const Texture& tex, double2 uv, int face)
 {
-	int i = 0, j = 0;
-	GetIndicesFromUV(uv, tex.m_width, tex.m_height, i, j);
-	return tex.m_faces[face].m_buff[j + i*tex.m_width];
+	int il = 0, ih = 0, jl = 0, jh = 0;
+	double wi = 0.0, wj = 0.0;
+	GetIndicesFromUV(uv, tex.m_width, tex.m_height, il, jl, ih, jh, wi, wj);
+	fpixel ll = tex.m_faces[face].m_buff[jl + il*tex.m_width];
+	fpixel lh = tex.m_faces[face].m_buff[jh + il*tex.m_width];
+	fpixel hl = tex.m_faces[face].m_buff[jl + ih*tex.m_width];
+	fpixel hh = tex.m_faces[face].m_buff[jh + ih*tex.m_width];
+    fpixel result =
+        ll * (1.0 - wi) * (1.0 - wj) +
+        lh * (1.0 - wi) * wj +
+        hl * wi * (1.0 - wj) +
+        hh * wi * wj;
+	return result;
 }
 
 void WriteTexture(Texture& tex, double2 uv, int face, const fpixel& p)

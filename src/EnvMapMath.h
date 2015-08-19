@@ -37,6 +37,10 @@ struct fpixel {
 	void Pow(double p) {r = pow(r, p); g = pow(g, p); b = pow(b, p);};
 };
 
+inline fpixel operator * (const double& a, const fpixel& f){	return fpixel(f.r * a, f.g * a, f.b * a);}
+inline fpixel operator * (const fpixel& f, const double& a){	return fpixel(f.r * a, f.g * a, f.b * a);}
+inline fpixel operator + (const fpixel& a, const fpixel& b){	return fpixel(a.r + b.r, a.g + b.g, a.b + b.b);}
+
 struct double2 {
 	double x,y;
 	double2():x(0),y(0){};
@@ -179,8 +183,11 @@ return p*x;
 
 inline float fastNormal(float a = 0.0f, float b = 1.0f)
 {
-	int x = xorshf96() % (256 * 256);
+    unsigned long long r = xorshf96() ;
+	int x = r & (256 * 256 - 1);
     float v = ((float)x) / (256 * 256);
     v = a + v * (b - a);
-	return erfinv(v);
+    float nn = erfinv(v);
+    reinterpret_cast<int&>(nn) = (reinterpret_cast<int&>(nn) & 0x7FFFFFFF) | ((r & (256 * 256)) << 15);
+	return nn;
 }

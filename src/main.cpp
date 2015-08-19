@@ -18,6 +18,8 @@ class CubeMap2Sphere: public IAction
 {
 public:
     virtual void DoTask(const Texture& inputTex, Texture& outputTex);
+
+    bool m_doNotRemoveOuterAreas;
 };
 
 class Sphere2CubeMap: public IAction
@@ -30,6 +32,9 @@ class BlurCubemap: public IAction
 {
 public:
     virtual void DoTask(const Texture& inputTex, Texture& outputTex);
+
+    float m_blurRadius;
+    int m_blurQuality;
 };
 
 class DummyAction: public IAction
@@ -53,6 +58,10 @@ int main(int argc, char* argv[])
 	TCLAP::ValueArg<std::string> outputFormatFileArg("f", "format", "Output texture file format. Can be one of the following \"TGA\", \"DDS\", \"PNG\". Default TGA.", false, "TGA", "Output format");
 	TCLAP::ValueArg<int> faceToWriteArg("F", "faceToWrite", "If cubemap texture is written to format that does not support faces, this face will be written", false, 0, "Face to write");
 
+	TCLAP::ValueArg<int> blurQualityArg("q", "blurQuality", "Effects the number of samples in Monte Carlo integration. Reasonable values are between 4 - 8. Large values will increase calculation time dramatically.", false, 4, "Blur quality");
+    TCLAP::ValueArg<float> blurRadiusArg("b", "blurRadius", "Gaussian blur radius", false, 10.0f, "Blur radius");
+    TCLAP::SwitchArg doNotRemoveOuterAreaFlag("l", "leaveOuter", "If flag is set, than while cubemap -> sphere transform area around the sphere circule are not filled black, but represent mathematical extrapolation.", false);
+
     std::vector<std::string> allowed;
 		allowed.push_back("cube2sphere");
 		allowed.push_back("sphere2cube");
@@ -68,6 +77,9 @@ int main(int argc, char* argv[])
         "\tconvert - Do nothing. Just to convert txture from one format to other\n", true, "", &allowedVals );
 
     cmd.add(actionLable);
+    cmd.add(doNotRemoveOuterAreaFlag);
+    cmd.add(blurRadiusArg);
+    cmd.add(blurQualityArg);
     cmd.add(faceToWriteArg);
     cmd.add(outputFormatFileArg);
     cmd.xorAdd(outputFileArg, outputMultiFileArg);
@@ -114,7 +126,9 @@ int main(int argc, char* argv[])
     std::string actionString = actionLable.getValue();
     if (actionString == "cube2sphere")
     {
-        action = new CubeMap2Sphere;
+        CubeMap2Sphere* cube2s = new CubeMap2Sphere;
+        cube2s->m_doNotRemoveOuterAreas = doNotRemoveOuterAreaFlag.getValue();
+        action = cube2s;
     }
     else if (actionString == "sphere2cube")
     {
@@ -122,7 +136,10 @@ int main(int argc, char* argv[])
     }
     else if (actionString == "blurCubemap")
     {
-        action = new BlurCubemap;
+        BlurCubemap* blur = new BlurCubemap;
+        blur->m_blurQuality = blurQualityArg.getValue();
+        blur->m_blurRadius = blurRadiusArg.getValue();
+        action = blur;
     }
     else if (actionString == "convert")
     {
@@ -188,7 +205,7 @@ void CubeMap2Sphere::DoTask(const Texture& inputTex, Texture& outputTex)
 		{
 			double2 uv = GetUVFromIndices(outputTex.m_width, outputTex.m_height, i, j);
 			double3 v;
-			bool valid = spheruv2v(uv, v);
+			bool valid = spheruv2v(uv, v) + m_doNotRemoveOuterAreas;
 			int face;
 			double2 uv_ = cube2uv(v,&face);
 			fpixel p = FetchTexture(inputTex, uv_, face);
@@ -233,7 +250,7 @@ void BlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
         printf("Error: For this task required cubmap.\n");
         return;
     }
-    float s = 0.1;
+    float s = m_blurRadius / sqrt(inputTex.m_width * inputTex.m_height);
 	outputTex.m_width = inputTex.m_width;
 	outputTex.m_height = inputTex.m_height;
 	int size = outputTex.m_width*outputTex.m_height;
@@ -247,18 +264,17 @@ void BlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
                 double2 uv = GetUVFromIndices(outputTex.m_width, outputTex.m_height, i, j);
                 double3 v = uv2cube(uv, k);
                 fpixel p(0.0,0.0,0.0);
-                int iterationCount = 5;
+                int iterationCount = m_blurQuality;
                 for (int itx = 0; itx < iterationCount; ++itx)
                 {
                     for (int ity = 0; ity < iterationCount; ++ity)
                     {
                         for (int itz = 0; itz < iterationCount; ++itz)
                         {
-                            double3 noise(
-                                fastNormal(itx * (1.0/iterationCount), (itx+1) * (1.0/iterationCount)),
-                                fastNormal(ity * (1.0/iterationCount), (ity+1) * (1.0/iterationCount)),
-                                fastNormal(itz * (1.0/iterationCount), (itz+1) * (1.0/iterationCount))
-                                );
+                            float x = fastNormal(itx * (1.0/iterationCount), (itx+1) * (1.0/iterationCount));
+                            float y = fastNormal(ity * (1.0/iterationCount), (ity+1) * (1.0/iterationCount));
+                            float z = fastNormal(itz * (1.0/iterationCount), (itz+1) * (1.0/iterationCount));
+                            double3 noise(x, y, z);
                             double3 v_ = v;
                             v_ += noise * s;
                             v_.Normalize();

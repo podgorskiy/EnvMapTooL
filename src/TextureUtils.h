@@ -43,7 +43,7 @@ public:
     virtual void SaveToFile(const Texture& tex, std::ostream& outputStream, int face);
 };
 
-
+void GetIndicesFromUV(const double2& uv, int width, int height, int& il, int& jl, int& ih, int& jh, double& wi, double& wj);
 void GetIndicesFromUV(const double2& uv, int width, int height, int& i, int& j);
 
 double2 GetUVFromIndices(int width, int height, int i, int j);
