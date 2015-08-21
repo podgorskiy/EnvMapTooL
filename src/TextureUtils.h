@@ -22,7 +22,8 @@ public:
     void LoadFromFile(const char* path, int face = 0);
     void SaveToFile(const char* path, IFileFormat* formatOptions, int face = 0);
 
-    Texture():m_cubemap(false)
+    float m_gamma;
+    Texture():m_cubemap(false), m_gamma(2.2)
     {
         m_faces.resize(6);
     };

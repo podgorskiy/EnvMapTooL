@@ -46,6 +46,7 @@ public:
     }
 };
 
+std::vector<double> GenerateKernel(double sigma, int kernelSize, int sampleCount);
 
 int main(int argc, char* argv[])
 {
@@ -58,9 +59,15 @@ int main(int argc, char* argv[])
 	TCLAP::ValueArg<std::string> outputFormatFileArg("f", "format", "Output texture file format. Can be one of the following \"TGA\", \"DDS\", \"PNG\". Default TGA.", false, "TGA", "Output format");
 	TCLAP::ValueArg<int> faceToWriteArg("F", "faceToWrite", "If cubemap texture is written to format that does not support faces, this face will be written", false, 0, "Face to write");
 
-	TCLAP::ValueArg<int> blurQualityArg("q", "blurQuality", "Effects the number of samples in Monte Carlo integration. Reasonable values are between 4 - 8. Large values will increase calculation time dramatically.", false, 4, "Blur quality");
-    TCLAP::ValueArg<float> blurRadiusArg("b", "blurRadius", "Gaussian blur radius", false, 10.0f, "Blur radius");
+	TCLAP::ValueArg<int> blurQualityArg("q", "blurQuality", "Effects the number of samples in Monte Carlo integration. Reasonable values are between 4 - 8. Large values will increase calculation time dramatically. Default is 4", false, 4, "Blur quality");
+    TCLAP::ValueArg<float> blurRadiusArg("b", "blurRadius", "Gaussian blur radius. Default is 10.0", false, 10.0f, "Blur radius");
     TCLAP::SwitchArg doNotRemoveOuterAreaFlag("l", "leaveOuter", "If flag is set, than while cubemap -> sphere transform area around the sphere circule are not filled black, but represent mathematical extrapolation.", false);
+
+    TCLAP::ValueArg<float> inputGammaArg("g", "inputGamma", "Gamma of input texture. Default is 2.2", false, 2.2f, "Input gamma");
+    TCLAP::ValueArg<float> outputGammaArg("G", "outputGamma", "Gamma of output texture. Default is 2.2", false, 2.2f, "Output gamma");
+
+    TCLAP::ValueArg<int> outputWidthArg("W", "outputWidth", "Width of output texture. Default is the same as input, or 4 times upscaled in case of cube2sphere transform, or 4 times downscaled in case of sphere2cube transform", false, -1, "Output texture width");
+    TCLAP::ValueArg<int> outputHeightArg("H", "outputHeight", "Height of output texture. Default is the same as input, or 4 times upscaled in case of cube2sphere transform, or 4 times downscaled in case of sphere2cube transform", false, -1, "Output texture height");
 
     std::vector<std::string> allowed;
 		allowed.push_back("cube2sphere");
@@ -77,6 +84,10 @@ int main(int argc, char* argv[])
         "\tconvert - Do nothing. Just to convert txture from one format to other\n", true, "", &allowedVals );
 
     cmd.add(actionLable);
+    cmd.add(outputWidthArg);
+    cmd.add(outputHeightArg);
+    cmd.add(outputGammaArg);
+    cmd.add(inputGammaArg);
     cmd.add(doNotRemoveOuterAreaFlag);
     cmd.add(blurRadiusArg);
     cmd.add(blurQualityArg);
@@ -87,6 +98,7 @@ int main(int argc, char* argv[])
 	cmd.parse( argc, argv );
 
     Texture* inputTex = new Texture;
+    inputTex->m_gamma = inputGammaArg.getValue();
 
     if ( inputFileArg.isSet() )
     {
@@ -110,6 +122,8 @@ int main(int argc, char* argv[])
     }
 
     Texture* outputTex = new Texture;
+    outputTex->m_gamma = outputGammaArg.getValue();
+
     IFileFormat* format = NULL;
     std::string formatString = outputFormatFileArg.getValue();
     if (formatString == "TGA")
@@ -122,16 +136,23 @@ int main(int argc, char* argv[])
         return 0;
     }
 
+    int outputWidth = inputTex->m_width;
+    int outputHeight = inputTex->m_height;
+
     IAction* action = NULL;
     std::string actionString = actionLable.getValue();
     if (actionString == "cube2sphere")
     {
+        outputWidth *= 4;
+        outputHeight *= 4;
         CubeMap2Sphere* cube2s = new CubeMap2Sphere;
         cube2s->m_doNotRemoveOuterAreas = doNotRemoveOuterAreaFlag.getValue();
         action = cube2s;
     }
     else if (actionString == "sphere2cube")
     {
+        outputWidth /= 4;
+        outputHeight /= 4;
         action = new Sphere2CubeMap;
     }
     else if (actionString == "blurCubemap")
@@ -150,6 +171,9 @@ int main(int argc, char* argv[])
         printf("Error: Wrong action!\n");
         return 0;
     }
+
+	outputTex->m_width = outputWidthArg.isSet() ? outputWidthArg.getValue() : outputWidth;
+	outputTex->m_height = outputHeightArg.isSet() ? outputHeightArg.getValue() : outputHeight;
 
     action->DoTask(*inputTex, *outputTex);
 
@@ -194,8 +218,6 @@ void CubeMap2Sphere::DoTask(const Texture& inputTex, Texture& outputTex)
         printf("Error: For this task required cubmap.\n");
         return;
     }
-	outputTex.m_width = inputTex.m_width * 4;
-	outputTex.m_height = inputTex.m_height * 4;
 	int size = outputTex.m_width*outputTex.m_height;
 	outputTex.m_faces[0].m_buff.resize(size);
 
@@ -222,8 +244,6 @@ void Sphere2CubeMap::DoTask(const Texture& inputTex, Texture& outputTex)
         printf("Error: For this task required not a cubmap.\n");
         return;
     }
-	outputTex.m_width = inputTex.m_width / 4;
-	outputTex.m_height = inputTex.m_height / 4;
 	int size = outputTex.m_width*outputTex.m_height;
 	for(int k = 0; k <6; ++k)
 	{
@@ -251,8 +271,7 @@ void BlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
         return;
     }
     float s = m_blurRadius / sqrt(inputTex.m_width * inputTex.m_height);
-	outputTex.m_width = inputTex.m_width;
-	outputTex.m_height = inputTex.m_height;
+
 	int size = outputTex.m_width*outputTex.m_height;
 	for(int k = 0; k <6; ++k)
 	{
@@ -287,197 +306,389 @@ void BlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
                 p /= iterationCount;
                 p /= iterationCount;
                 p /= iterationCount;
+                //p = p * (k!=5) + fpixel(((float)i)/outputTex.m_width,((float)j)/outputTex.m_width,1.0) * (k==5);
                 WriteTexture(outputTex, uv, k, p);
             }
         }
     }
     outputTex.m_cubemap = true;
+
+    // Noise down step
+    Texture tmpTex = outputTex;
+    Texture tmpTex23 = outputTex;
+    int radius = 31;
+    int kernelSize = 2 * radius + 1;
+    std::vector<double> kernel = GenerateKernel(1.0 / 3.0 * radius, kernelSize, 1000.0);
+    for(int k = 0; k <6; ++k)
+	{
+
+        for (int i = 0;i<outputTex.m_height;i++)
+        {
+            for (int j = 0;j<outputTex.m_width;j++)
+            {
+                fpixel s(0.0, 0.0, 0.0);
+                for(int n = -radius; n < radius+1; ++n)
+                {
+                    int j_ = j + n;
+                    int k_ = k;
+                    if (k != 2 && k != 3)
+                    {
+                        if (j_ < 0)
+                        {
+                            j_ += outputTex.m_width;
+                            switch(k)
+                            {
+                            case 4:k_ = 0; break;
+                            case 5:k_ = 1; break;
+                            case 0:k_ = 5; break;
+                            case 1:k_ = 4; break;
+                            }
+                        }
+                        if (j_ >= outputTex.m_width)
+                        {
+                            j_ -= outputTex.m_width;
+                            switch(k)
+                            {
+                            case 0:k_ = 4; break;
+                            case 1:k_ = 5; break;
+                            case 5:k_ = 0; break;
+                            case 4:k_ = 1; break;
+
+                            }
+                        }
+                        s += outputTex.m_faces[k_].m_buff[j_ + i*outputTex.m_width] * kernel[n + radius];
+                    }
+                    else
+                    {
+                        if (k==2)
+                        {
+                            if (j_ < 0)
+                            {
+                                j_ += outputTex.m_width;
+                                k_ = 0;
+                                s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - i - 1) + j_*outputTex.m_width] * kernel[n + radius];
+                            }
+                            else if (j_ >= outputTex.m_width)
+                            {
+                                j_ -= outputTex.m_width;
+                                j_ = outputTex.m_height - j_ - 1;
+                                k_ = 1;
+                                s += outputTex.m_faces[k_].m_buff[i + j_*outputTex.m_width] * kernel[n + radius];
+                            }
+                            else
+                            {
+                                s += outputTex.m_faces[k_].m_buff[j_ + i*outputTex.m_width] * kernel[n + radius];
+                            }
+                        }
+                        else//k = 3
+                        {
+                            if (j_ < 0)
+                            {
+                                j_ += outputTex.m_width;
+                                k_ = 0;
+                                s += outputTex.m_faces[k_].m_buff[i + (outputTex.m_height - j_ - 1)*outputTex.m_width] * kernel[n + radius];
+                            }
+                            else if (j_ >= outputTex.m_width)
+                            {
+                                j_ -= outputTex.m_width;
+                                j_ = outputTex.m_height - j_ - 1;
+                                k_ = 1;
+                                s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - i - 1) + (outputTex.m_height - j_ - 1)*outputTex.m_width] * kernel[n + radius];
+                            }
+                            else
+                            {
+                                s += outputTex.m_faces[k_].m_buff[j_ + i*outputTex.m_width] * kernel[n + radius];
+                            }
+                        }
+                    }
+                }
+                tmpTex.m_faces[k].m_buff[j + i*outputTex.m_width]  = s;
+            }
+        }
+    }
+    for(int k = 2; k <4; ++k)
+	{
+        for (int j = 0;j<outputTex.m_width;j++)
+        {
+            for (int i = 0;i<outputTex.m_height;i++)
+            {
+                fpixel s(0.0, 0.0, 0.0);
+                for(int n = -radius; n < radius+1; ++n)
+                {
+                    int i_ = i + n;
+                    int k_ = k;
+                    if (k == 2)
+                    {
+                        if (i_ < 0)
+                        {
+                            i_ += outputTex.m_height;
+                            k_ = 4;
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                        else if (i_ >= outputTex.m_width)
+                        {
+                            i_ -= outputTex.m_width;
+                            i_ = outputTex.m_height - i_ - 1;
+                            k_ = 5;
+                            s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                        else
+                        {
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                    }
+                    if (k == 3)
+                    {
+                        if (i_ < 0)
+                        {
+                            i_ += outputTex.m_height;
+                            i_ = outputTex.m_height - i_ - 1;
+                            k_ = 5;
+                            s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                        else if (i_ >= outputTex.m_width)
+                        {
+                            i_ -= outputTex.m_width;
+                            k_ = 4;
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                        else
+                        {
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                    }
+                }
+                tmpTex23.m_faces[k].m_buff[j + i*outputTex.m_width]  = s;
+            }
+        }
+	}
+
+	outputTex = tmpTex;
+    for(int k = 0; k <6; ++k)
+	{
+        for (int j = 0;j<outputTex.m_width;j++)
+        {
+            for (int i = 0;i<outputTex.m_height;i++)
+            {
+                fpixel s(0.0, 0.0, 0.0);
+                for(int n = -radius; n < radius+1; ++n)
+                {
+                    int i_ = i + n;
+                    int k_ = k;
+                    if (k == 2)
+                    {
+                        if (i_ < 0)
+                        {
+                            i_ += outputTex.m_height;
+                            k_ = 4;
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                        else if (i_ >= outputTex.m_width)
+                        {
+                            i_ -= outputTex.m_width;
+                            i_ = outputTex.m_height - i_ - 1;
+                            k_ = 5;
+                            s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                        else
+                        {
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                    }
+                    if (k == 3)
+                    {
+                        if (i_ < 0)
+                        {
+                            i_ += outputTex.m_height;
+                            i_ = outputTex.m_height - i_ - 1;
+                            k_ = 5;
+                            s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                        else if (i_ >= outputTex.m_width)
+                        {
+                            i_ -= outputTex.m_width;
+                            k_ = 4;
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                        else
+                        {
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                    }
+                    else if(k == 5)
+                    {
+                        if (i_ < 0)
+                        {
+                            i_ += outputTex.m_height;
+                            i_ = outputTex.m_height - i_ - 1;
+                            k_ = 3;
+                            s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                        else if (i_ >= outputTex.m_width)
+                        {
+                            i_ -= outputTex.m_width;
+                            i_ = outputTex.m_height - i_ - 1;
+                            k_ = 2;
+                            s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                        else
+                        {
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                    }
+                    else if(k == 4)
+                    {
+                        if (i_ < 0)
+                        {
+                            i_ += outputTex.m_height;
+                            k_ = 3;
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                        else if (i_ >= outputTex.m_width)
+                        {
+                            i_ -= outputTex.m_width;
+                            k_ = 2;
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                        else
+                        {
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                    }
+                    else if(k == 0)
+                    {
+                        if (i_ < 0)
+                        {
+                            i_ += outputTex.m_height;
+                            i_ = outputTex.m_width - 1 - i_;
+                            k_ = 3;
+                            s += tmpTex23.m_faces[k_].m_buff[i_ + j * outputTex.m_width] * kernel[n + radius];
+                        }
+                        else if (i_ >= outputTex.m_width)
+                        {
+                            i_ -= outputTex.m_width;
+                            k_ = 2;
+                            s += tmpTex23.m_faces[k_].m_buff[i_ + (outputTex.m_height - j - 1)*outputTex.m_width] * kernel[n + radius];
+                        }
+                        else
+                        {
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                    }
+                    else if(k == 1)
+                    {
+                        if (i_ < 0)
+                        {
+                            i_ += outputTex.m_height;
+                            k_ = 3;
+                            s += tmpTex23.m_faces[k_].m_buff[i_ + (outputTex.m_height - j - 1) * outputTex.m_width] * kernel[n + radius];
+                        }
+                        else if (i_ >= outputTex.m_width)
+                        {
+                            i_ -= outputTex.m_width;
+                            i_ = outputTex.m_width - 1 - i_;
+                            k_ = 2;
+                            s += tmpTex23.m_faces[k_].m_buff[i_ + j * outputTex.m_width] * kernel[n + radius];
+                        }
+                        else
+                        {
+                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                        }
+                    }
+                }
+                tmpTex.m_faces[k].m_buff[j + i*outputTex.m_width]  = s;
+            }
+        }
+
+	}
+	outputTex = tmpTex;
 }
 
-	/*
-	double rad=0.002f;
-	int iter = 10;
+double gaussianDistribution(double x, double mu, double sigma)
+{
+    double d = x - mu;
+    double n = 1.0 / (sqrt(2 * 3.141592654) * sigma);
+    return exp(-d*d/(2 * sigma * sigma)) * n;
+};
 
+std::vector<std::pair<double, double> > sampleInterval(double sigma, double minInclusive, double maxInclusive, int sampleCount)
+{
+    std::vector<std::pair<double, double> > result;
+    double stepSize = (maxInclusive - minInclusive) / (sampleCount-1);
 
-	texture* otex = new texture;
-	otex->width = tex->width*4;
-	otex->height = tex->height*2;
-	int size = sizeof(pixel)*otex->width*otex->height;
-	otex->buff = (pixel*)malloc(size);
-	for (int i = 0;i<tex->height;i++){
-		for (int j = 0;j<tex->width;j++){
-			otex->buff[(j) + (i+otex->height/2)*otex->width] = tex->buff[tex->width*tex->height*0 + j + i*tex->width];
-		}
-	}
-	for (int i = 0;i<tex->height;i++){
-		for (int j = 0;j<tex->width;j++){
-			otex->buff[(j+otex->width/2) + (i+otex->height/2)*otex->width] = tex->buff[tex->width*tex->height*1 + j + i*tex->width];
-		}
-	}
-	for (int i = 0;i<tex->height;i++){
-		for (int j = 0;j<tex->width;j++){
-			otex->buff[(j+otex->width/4) + (i+otex->height/2)*otex->width] = tex->buff[tex->width*tex->height*4 + j + i*tex->width];
-		}
-	}
-	for (int i = 0;i<tex->height;i++){
-		for (int j = 0;j<tex->width;j++){
-			otex->buff[(j+otex->width/4) + (i)*otex->width] = tex->buff[tex->width*tex->height*5 + j + i*tex->width];
-		}
-	}
-	for (int i = 0;i<tex->height;i++){
-		for (int j = 0;j<tex->width;j++){
-			otex->buff[(j+otex->width/2) + (i)*otex->width] = tex->buff[tex->width*tex->height*3 + j + i*tex->width];
-		}
-	}
-	for (int i = 0;i<tex->height;i++){
-		for (int j = 0;j<tex->width;j++){
-			otex->buff[(j) + (i)*otex->width] = tex->buff[tex->width*tex->height*2 + j + i*tex->width];
-		}
-	}
+    for(int s=0; s<sampleCount; ++s)
+    {
+        double x = minInclusive + s * stepSize;
+        double y = gaussianDistribution(x, 0, sigma);
+        result.push_back(std::make_pair(x, y));
+    }
+    return result;
+};
 
-	*/
-	/*
-	double ax=0.5;
+double integrateSimphson(const std::vector<std::pair<double, double> >& samples)
+{
+    double result = samples[0].second + samples[samples.size()-1].second;
+    for(int s = 1; s < samples.size()-1; ++s)
+    {
+        double sampleWeight = (s % 2 == 0) ? 2.0 : 4.0;
+        result += sampleWeight * samples[s].second;
+    }
+    double h = (samples[samples.size()-1].first - samples[0].first) / (samples.size()-1);
+    return result * h / 3.0;
+};
 
-	texture* otex = new texture;
-	otex->width = tex->width*4;
-	otex->height = tex->height*2;
-	int size = sizeof(pixel)*otex->width*otex->height;
-	otex->buff = (pixel*)malloc(size);
-	double2 uv;
-	double2 uv_;
-	for (int i = 0;i<tex->height;i++){
-		for (int j = 0;j<tex->width;j++){
-			uv.x = j/(double)tex->width;
-			uv.y = (tex->height - i)/(double)tex->height;
-			double3 v = uv2cube(uv,0);
-			v.rotatex(ax);
-			int n;
-			uv_ = cube2uv(v,&n);
-			int j_ = uv_.x*tex->width;
-			int i_ = (1.0-uv_.y)*tex->height;
-			otex->buff[(j) + (i+otex->height/2)*otex->width] = tex->buff[tex->width*tex->height*n + j_ + i_*tex->width];
-		}
-	}
-	for (int i = 0;i<tex->height;i++){
-		for (int j = 0;j<tex->width;j++){
-			uv.x = j/(double)tex->width;
-			uv.y = (tex->height - i)/(double)tex->height;
-			double3 v = uv2cube(uv,1);
-			v.rotatex(ax);
-			int n;
-			uv_ = cube2uv(v,&n);
-			int j_ = uv_.x*tex->width;
-			int i_ = (1.0-uv_.y)*tex->height;
-			otex->buff[(j+otex->width/2) + (i+otex->height/2)*otex->width] = tex->buff[tex->width*tex->height*n + j_ + i_*tex->width];
-		}
-	}
-	for (int i = 0;i<tex->height;i++){
-		for (int j = 0;j<tex->width;j++){
-			uv.x = j/(double)tex->width;
-			uv.y = (tex->height - i)/(double)tex->height;
-			double3 v = uv2cube(uv,4);
-			v.rotatex(ax);
-			int n;
-			uv_ = cube2uv(v,&n);
-			int j_ = uv_.x*tex->width;
-			int i_ = (1.0-uv_.y)*tex->height;
-			otex->buff[(j+otex->width/4) + (i+otex->height/2)*otex->width] = tex->buff[tex->width*tex->height*n + j_ + i_*tex->width];
-		}
-	}
-	for (int i = 0;i<tex->height;i++){
-		for (int j = 0;j<tex->width;j++){
-			uv.x = j/(double)tex->width;
-			uv.y = (tex->height - i)/(double)tex->height;
-			double3 v = uv2cube(uv,5);
-			v.rotatex(ax);
-			int n;
-			uv_ = cube2uv(v,&n);
-			int j_ = uv_.x*tex->width;
-			int i_ = (1.0-uv_.y)*tex->height;
-			otex->buff[(j+otex->width/4) + (i)*otex->width] = tex->buff[tex->width*tex->height*n + j_ + i_*tex->width];
-		}
-	}
-	for (int i = 0;i<tex->height;i++){
-		for (int j = 0;j<tex->width;j++){
-			uv.x = j/(double)tex->width;
-			uv.y = (tex->height - i)/(double)tex->height;
-			double3 v = uv2cube(uv,3);
-			v.rotatex(ax);
-			int n;
-			uv_ = cube2uv(v,&n);
-			int j_ = uv_.x*tex->width;
-			int i_ = (1.0-uv_.y)*tex->height;
-			otex->buff[(j+otex->width/2) + (i)*otex->width] = tex->buff[tex->width*tex->height*n + j_ + i_*tex->width];
-		}
-	}
-	for (int i = 0;i<tex->height;i++){
-		for (int j = 0;j<tex->width;j++){
-			uv.x = j/(double)tex->width;
-			uv.y = (tex->height - i)/(double)tex->height;
-			double3 v = uv2cube(uv,2);
-			v.rotatex(ax);
-			int n;
-			uv_ = cube2uv(v,&n);
-			int j_ = uv_.x*tex->width;
-			int i_ = (1.0-uv_.y)*tex->height;
-			otex->buff[(j) + (i)*otex->width] = tex->buff[tex->width*tex->height*n + j_ + i_*tex->width];
-		}
-	}
+double roundTo(double num, int decimals)
+{
+    double shift = pow(10, decimals);
+    return Round(num * shift) / shift;
+};
 
-		*/
-	//double ax=0.5;
-	/*
-	double rad=0.1f;
-	int iter=100;
+std::vector<std::pair<double, double> > calcSamplesForRange(double minInclusive, double maxInclusive, double sigma, int samplesPerBin)
+{
+    return sampleInterval(
+        sigma,
+        minInclusive,
+        maxInclusive,
+        samplesPerBin
+    );
+}
 
-	texture* otex = new texture;
-	otex->width = 2048;
-	otex->height = 1024;
-	int size = sizeof(pixel)*otex->width*otex->height;
-	otex->buff = new pixel[size];
-	double2 uv;
-	double2 uv_;
-	for (int s=0;s<6;s++){
-		for (int i = 0;i<otex->height/2;i++){
-			for (int j = 0;j<otex->width/4;j++){
-				int r=0;
-				int g=0;
-				int b=0;
-				for (int k=0;k<iter;k++){
-					double2 uv = GetUVFormIndices(otex->width/4, otex->height/2, i, j);
-					double3 v;
-					switch(s){
-						case 0: v = uv2cube(uv,0); break;
-						case 1: v = uv2cube(uv,1); break;
-						case 2: v = uv2cube(uv,4); break;
-						case 3: v = uv2cube(uv,5); break;
-						case 4: v = uv2cube(uv,3); break;
-						case 5: v = uv2cube(uv,2); break;
-					}
-					v.x+=(50 - rand()%100)/50.0*rad;
-					v.y+=(50 - rand()%100)/50.0*rad;
-					v.z+=(50 - rand()%100)/50.0*rad;
-					v.Normalize();
-					int face;
-					uv_ = cube2uv(v,&face);
-					pixel p = FetchFormTexture( tex, uv_, face);
-					r+=p.r;
-					g+=p.g;
-					b+=p.b;
-				}
-				pixel p(r/iter,g/iter,b/iter);
-				switch(s){
-					case 0: otex->buff[(j) + (i+otex->height/2)*otex->width] = p; break;
-					case 1: otex->buff[(j+otex->width/2) + (i+otex->height/2)*otex->width]=p; break;
-					case 2: otex->buff[(j+otex->width/4) + (i+otex->height/2)*otex->width]=p; break;
-					case 3: otex->buff[(j+otex->width/4) + (i)*otex->width]=p; break;
-					case 4: otex->buff[(j+otex->width/2) + (i)*otex->width]=p; break;
-					case 5: otex->buff[(j) + (i)*otex->width]=p; break;
-				}
-			}
-		}
-	}
-	*/
+std::vector<double> GenerateKernel(double sigma, int kernelSize, int sampleCount)
+{
+    int samplesPerBin = ceil(sampleCount / kernelSize);
+    if(samplesPerBin % 2 == 0)
+        ++samplesPerBin;
+    double weightSum = 0;
+    int kernelLeft = -floor(kernelSize/2);
 
+    std::vector<std::pair<double, double> > outsideSamplesLeft  = calcSamplesForRange(-5 * sigma, kernelLeft - 0.5, sigma, samplesPerBin);
+    std::vector<std::pair<double, double> > outsideSamplesRight = calcSamplesForRange(-kernelLeft+0.5, 5 * sigma, sigma, samplesPerBin);
+
+    std::vector<std::pair<std::vector<std::pair<double, double> >, double> > allSamples;
+    allSamples.push_back(std::make_pair(outsideSamplesLeft, 0.0));
+
+    for(int tap=0; tap<kernelSize; ++tap)
+    {
+        double left = kernelLeft - 0.5 + tap;
+
+        std::vector<std::pair<double, double> > tapSamples = calcSamplesForRange(left, left+1, sigma, samplesPerBin);
+        double tapWeight = integrateSimphson(tapSamples);
+        allSamples.push_back(std::make_pair(tapSamples, tapWeight));
+        weightSum += tapWeight;
+    }
+
+    allSamples.push_back(std::make_pair(outsideSamplesRight, 0.0));
+
+    for(int i=0; i<allSamples.size(); ++i)
+    {
+        allSamples[i].second = roundTo(allSamples[i].second / weightSum, 6);
+    }
+
+    std::vector<double> weights;
+    for(int i=1; i<allSamples.size()-1; ++i)
+    {
+        weights.push_back(allSamples[i].second);
+    }
+    return weights;
+}
 
