@@ -13,6 +13,8 @@ void FastBlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
 		return;
 	}
 
+	outputTex = inputTex;
+
 	int radius = m_blurRadius;
 	int kernelSize = 2 * radius + 1;
 	std::vector<double> kernel = GenerateKernel(1.0 / 3.0 * radius, kernelSize, 1000.0);
