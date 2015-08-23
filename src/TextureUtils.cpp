@@ -12,37 +12,37 @@ void Texture::LoadFromFile(const char* path, int face)
 	std::ifstream fileStream(path,std::ios::binary);
 
 	//Test DDS
-    int magic;
-    fileStream.read((char*)&magic, 4);
-    fileStream.seekg(0);
+	int magic;
+	fileStream.read((char*)&magic, 4);
+	fileStream.seekg(0);
 	if (magic == 0x20534444)
 	{
-        LoadDDStexture(fileStream, face);
-        return;
+		LoadDDStexture(fileStream, face);
+		return;
 	}
 
-    //Test Targa
-    struct TgaTestHeader
-    {
-        char unused;
-        char color_map_type;
-        char image_type;
-        char unused2[5];
-        char unused3[8];
-        char pixel_depth;
-    };
-    TgaTestHeader tgaTest;
-    fileStream.read((char*)&tgaTest, sizeof(TgaTestHeader));
-    fileStream.seekg(0);
-    if (
-        ( (tgaTest.color_map_type & 0xFE) == 0) &&
-        ( (tgaTest.image_type & 0xF0) == 0) &&
-        ( (tgaTest.pixel_depth == 1) || (tgaTest.pixel_depth == 8) || (tgaTest.pixel_depth == 24) || (tgaTest.pixel_depth == 32) )
-    )
-    {
-        LoadTARGAtexture(fileStream, face);
-        return;
-    }
+	//Test Targa
+	struct TgaTestHeader
+	{
+		char unused;
+		char color_map_type;
+		char image_type;
+		char unused2[5];
+		char unused3[8];
+		char pixel_depth;
+	};
+	TgaTestHeader tgaTest;
+	fileStream.read((char*)&tgaTest, sizeof(TgaTestHeader));
+	fileStream.seekg(0);
+	if (
+		( (tgaTest.color_map_type & 0xFE) == 0) &&
+		( (tgaTest.image_type & 0xF0) == 0) &&
+		( (tgaTest.pixel_depth == 1) || (tgaTest.pixel_depth == 8) || (tgaTest.pixel_depth == 24) || (tgaTest.pixel_depth == 32) )
+	)
+	{
+		LoadTARGAtexture(fileStream, face);
+		return;
+	}
 }
 
 void Texture::SaveToFile(const char* path, IFileFormat* formatOptions, int face)
@@ -51,8 +51,8 @@ void Texture::SaveToFile(const char* path, IFileFormat* formatOptions, int face)
 	if ( ! outputStream) {
 		std::cout << "Error: Can not create output file" << std::endl;
 		return;
-    }
-    formatOptions->SaveToFile(*this, outputStream, face);
+	}
+	formatOptions->SaveToFile(*this, outputStream, face);
 }
 
 void Texture::LoadDDStexture(std::istream& inputStream, int face)
@@ -63,20 +63,20 @@ void Texture::LoadDDStexture(std::istream& inputStream, int face)
 	inputStream.read((char*)&header,sizeof(DDS_HEADER));
 	m_cubemap = ((header.dwSurfaceFlags & DDS_SURFACE_FLAGS_CUBEMAP) == DDS_SURFACE_FLAGS_CUBEMAP);
 
-    if (m_cubemap)
-    {
-        if ((header.dwCubemapFlags & DDS_CUBEMAP_ALLFACES) != DDS_CUBEMAP_ALLFACES)
-        {
-            printf("Error: Missing faces in cubemap!");
-            return;
-        }
-    }
+	if (m_cubemap)
+	{
+		if ((header.dwCubemapFlags & DDS_CUBEMAP_ALLFACES) != DDS_CUBEMAP_ALLFACES)
+		{
+			printf("Error: Missing faces in cubemap!");
+			return;
+		}
+	}
 
 	if ((header.ddspf.dwFlags & DDS_RGB) != DDS_RGB)
 	{
-        printf("Error: Wrong DDS format!");
-        return;
-    }
+		printf("Error: Wrong DDS format!");
+		return;
+	}
 
 	bool alpha = ((header.ddspf.dwFlags & DDS_RGBA) == DDS_RGBA);
 
@@ -87,19 +87,19 @@ void Texture::LoadDDStexture(std::istream& inputStream, int face)
 		int countOfFaces = m_cubemap ? 6 : 1;
 		int size = m_width * m_height;
 
-        m_faces.resize(countOfFaces);
+		m_faces.resize(countOfFaces);
 
 		for (int k=0; k < countOfFaces; k++)
 		{
-            if (!m_cubemap)
-            {
-                k = face;
-            }
+			if (!m_cubemap)
+			{
+				k = face;
+			}
 
 			m_faces[k].m_buff.resize(size);
 			for (int j=m_height-1;j>=0;j--){
 				for (int i=m_width-1;i>=0;i--){
-                    fpixel f;
+					fpixel f;
 					if (alpha){
 						apixel b;
 						inputStream.read((char*)&b,sizeof(apixel));
@@ -114,7 +114,7 @@ void Texture::LoadDDStexture(std::istream& inputStream, int face)
 				}
 			}
 
-            //skeeping mipmaps
+			//skeeping mipmaps
 			int mip=1;
 			for (unsigned int j=0;j<header.dwMipMapCount-1;j++){
 				mip*=2;
@@ -128,9 +128,9 @@ void Texture::LoadDDStexture(std::istream& inputStream, int face)
 	}
 	else
 	{
-        printf("Error: Wrong DDS format!");
-        return;
-    }
+		printf("Error: Wrong DDS format!");
+		return;
+	}
 }
 
 void Texture::LoadTARGAtexture(std::istream& inputStream, int face)
@@ -139,23 +139,23 @@ void Texture::LoadTARGAtexture(std::istream& inputStream, int face)
 	inputStream.read(buff,18);
 	if (face == 0)
 	{
-        m_width  = *((short*)&buff[0xc]);
-        m_height = *((short*)&buff[0xe]);
+		m_width  = *((short*)&buff[0xc]);
+		m_height = *((short*)&buff[0xe]);
 	}
 	int size = m_width*m_height;
 	m_faces[face].m_buff.resize(size);
-    for (int j=0;j<m_height;j++)
-    {
+	for (int j=0;j<m_height;j++)
+	{
 		for (int i=0;i<m_width;i++)
 		{
-            pixel b;
-            fpixel f;
+			pixel b;
+			fpixel f;
 			inputStream.read((char*)&b,sizeof(pixel));
 			f = b;
-            f.Pow(m_gamma);
+			f.Pow(m_gamma);
 			m_faces[face].m_buff[i+j*m_width] = f;
 		}
-    }
+	}
 }
 
 void TGAFile::SaveToFile(const Texture& tex, std::ostream& outputStream, int face)
@@ -169,18 +169,18 @@ void TGAFile::SaveToFile(const Texture& tex, std::ostream& outputStream, int fac
 	buff[0xf]=*((char*)&tex.m_height+1);
 	buff[0x10]=24;
 	outputStream.write(buff,18);
-    for (int j=0;j<tex.m_height;j++)
-    {
+	for (int j=0;j<tex.m_height;j++)
+	{
 		for (int i=0;i<tex.m_width;i++)
 		{
-            pixel b;
-            fpixel f;
-            f = tex.m_faces[face].m_buff[i+j*tex.m_width];
-            f.Pow(1.0f/tex.m_gamma);
-            b = pixel(f.r * 255, f.g * 255, f.b * 255);
-            outputStream.write((char*)(&b),sizeof(pixel));
-        }
-    }
+			pixel b;
+			fpixel f;
+			f = tex.m_faces[face].m_buff[i+j*tex.m_width];
+			f.Pow(1.0f/tex.m_gamma);
+			b = pixel(f.r * 255, f.g * 255, f.b * 255);
+			outputStream.write((char*)(&b),sizeof(pixel));
+		}
+	}
 	return;
 }
 
@@ -196,12 +196,12 @@ void GetIndicesFromUV(const double2& uv, int width, int height, int& il, int& jl
 	double2 uv_ = clamp(uv, 0.0f, 1.0f);
 	double j = uv_.x * (width - 1);
 	double i = height - 1 - uv_.y * (height - 1);
-    il = static_cast<int>(floor(i));
-    ih = static_cast<int>(ceil(i));
-    jl = static_cast<int>(floor(j));
-    jh = static_cast<int>(ceil(j));
-    wi = i - il;
-    wj = j - jl;
+	il = static_cast<int>(floor(i));
+	ih = static_cast<int>(ceil(i));
+	jl = static_cast<int>(floor(j));
+	jh = static_cast<int>(ceil(j));
+	wi = i - il;
+	wj = j - jl;
 }
 
 double2 GetUVFromIndices(int width, int height, int i, int j)
@@ -221,11 +221,11 @@ fpixel FetchTexture(const Texture& tex, double2 uv, int face)
 	fpixel lh = tex.m_faces[face].m_buff[jh + il*tex.m_width];
 	fpixel hl = tex.m_faces[face].m_buff[jl + ih*tex.m_width];
 	fpixel hh = tex.m_faces[face].m_buff[jh + ih*tex.m_width];
-    fpixel result =
-        ll * (1.0 - wi) * (1.0 - wj) +
-        lh * (1.0 - wi) * wj +
-        hl * wi * (1.0 - wj) +
-        hh * wi * wj;
+	fpixel result =
+		ll * (1.0 - wi) * (1.0 - wj) +
+		lh * (1.0 - wi) * wj +
+		hl * wi * (1.0 - wj) +
+		hh * wi * wj;
 	return result;
 }
 

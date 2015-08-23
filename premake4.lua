@@ -51,6 +51,7 @@ solution "EnvMapTool"
       targetdir("")
 
       includedirs {
+         "src",
          "libs/tclap/include/",
          "libs/zlib/",
          "libs/libpng/",

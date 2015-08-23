@@ -15,6 +15,7 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DDEBUG" />
+					<Add directory="../../src" />
 					<Add directory="../../libs/tclap/include" />
 					<Add directory="../../libs/zlib" />
 					<Add directory="../../libs/libpng" />
@@ -37,6 +38,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-DNDEBUG" />
+					<Add directory="../../src" />
 					<Add directory="../../libs/tclap/include" />
 					<Add directory="../../libs/zlib" />
 					<Add directory="../../libs/libpng" />
@@ -53,6 +55,9 @@
 				</Linker>
 			</Target>
 		</Build>
+		<Unit filename="../../src/GaussianWeights.h">
+			<Option virtualFolder="src" />
+		</Unit>
 		<Unit filename="../../src/TextureUtils.h">
 			<Option virtualFolder="src" />
 		</Unit>
@@ -65,14 +70,32 @@
 		<Unit filename="../../src/CoordinateTransform.h">
 			<Option virtualFolder="src" />
 		</Unit>
+		<Unit filename="../../src/Actions/Actions.h">
+			<Option virtualFolder="src/Actions" />
+		</Unit>
 		<Unit filename="../../src/main.cpp">
 			<Option virtualFolder="src" />
 		</Unit>
 		<Unit filename="../../src/TextureUtils.cpp">
 			<Option virtualFolder="src" />
 		</Unit>
+		<Unit filename="../../src/GaussianWeights.cpp">
+			<Option virtualFolder="src" />
+		</Unit>
 		<Unit filename="../../src/CoordinateTransform.cpp">
 			<Option virtualFolder="src" />
+		</Unit>
+		<Unit filename="../../src/Actions/CubeMap2Sphere.cpp">
+			<Option virtualFolder="src/Actions" />
+		</Unit>
+		<Unit filename="../../src/Actions/Sphere2CubeMap.cpp">
+			<Option virtualFolder="src/Actions" />
+		</Unit>
+		<Unit filename="../../src/Actions/FastBlurCubemap.cpp">
+			<Option virtualFolder="src/Actions" />
+		</Unit>
+		<Unit filename="../../src/Actions/BlurCubemap.cpp">
+			<Option virtualFolder="src/Actions" />
 		</Unit>
 		<Extensions>
 		</Extensions>
