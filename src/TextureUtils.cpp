@@ -4,20 +4,31 @@ typedef unsigned int DWORD;
 #include "dds.h"
 #include "EnvMapMath.h"
 
+#include <png.h>
 #include <iostream>
 #include <fstream>
+#include <string.h>
+#include <stdlib.h>
 
 void Texture::LoadFromFile(const char* path, int face)
 {
 	std::ifstream fileStream(path,std::ios::binary);
 
-	//Test DDS
 	int magic;
 	fileStream.read((char*)&magic, 4);
 	fileStream.seekg(0);
+
+	//Test DDS
 	if (magic == 0x20534444)
 	{
 		LoadDDStexture(fileStream, face);
+		return;
+	}
+
+	//TEST PNG
+	if (magic == 0x474E5089)
+	{
+		LoadPNGtexture(fileStream, face);
 		return;
 	}
 
@@ -43,6 +54,8 @@ void Texture::LoadFromFile(const char* path, int face)
 		LoadTARGAtexture(fileStream, face);
 		return;
 	}
+
+
 }
 
 void Texture::SaveToFile(const char* path, IFileFormat* formatOptions, int face)
@@ -228,6 +241,179 @@ void DDSFile::SaveToFile(const Texture& tex, std::ostream& outputStream, int fac
 			}
 		}
 	}
+}
+
+struct mem_encode
+{
+    char *buffer;
+    size_t size;
+};
+
+void my_png_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
+{
+    struct mem_encode* p=(struct mem_encode*)png_get_io_ptr(png_ptr);
+    size_t nsize = p->size + length;
+
+    /* allocate or grow buffer */
+    if(p->buffer)
+        p->buffer = (char*)realloc(p->buffer, nsize);
+    else
+        p->buffer = (char*)malloc(nsize);
+
+    if(!p->buffer)
+        png_error(png_ptr, "Write Error");
+
+    /* copy new bytes to end of buffer */
+    memcpy(p->buffer + p->size, data, length);
+    p->size += length;
+}
+
+void my_png_read_data(png_structp pngPtr, png_bytep data, png_size_t length) {
+    png_voidp a = png_get_io_ptr(pngPtr);
+    ((std::istream*)a)->read((char*)data, length);
+}
+
+void Texture::LoadPNGtexture(std::istream& inputStream, int face)
+{
+    png_structp png_ptr = NULL;
+    png_infop info_ptr = NULL;
+    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (png_ptr == NULL) {
+    	return;
+    }
+    info_ptr = png_create_info_struct(png_ptr);
+    if (info_ptr == NULL) {
+    	png_destroy_read_struct(&png_ptr, NULL, NULL);
+    	return;
+    }
+    if (setjmp(png_jmpbuf(png_ptr))) {
+    	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+    	return;
+    }
+    png_set_read_fn(png_ptr,(png_voidp)&inputStream, my_png_read_data);
+    png_read_info(png_ptr, info_ptr);
+    m_width =  png_get_image_width(png_ptr, info_ptr);
+    m_height = png_get_image_height(png_ptr, info_ptr);
+    png_uint_32 bitdepth   = png_get_bit_depth(png_ptr, info_ptr);
+    png_uint_32 channels   = png_get_channels(png_ptr, info_ptr);
+    png_uint_32 color_type = png_get_color_type(png_ptr, info_ptr);
+    switch (color_type)
+    {
+    case PNG_COLOR_TYPE_PALETTE:
+        png_set_palette_to_rgb(png_ptr);
+        channels = 3;
+    break;
+    case PNG_COLOR_TYPE_GRAY:
+        if (bitdepth < 8)
+            png_set_expand_gray_1_2_4_to_8(png_ptr);
+        bitdepth = 8;
+    break;
+    }
+    if (bitdepth == 16)
+        png_set_strip_16(png_ptr);
+
+    png_bytep* rowPtrs = new png_bytep[m_height];
+    char* data = new char[m_width * m_height * bitdepth * channels / 8];
+    const unsigned int stride = m_width * bitdepth * channels / 8;
+
+    for (size_t i = 0; i < m_height; i++) {
+        png_uint_32 q = (m_height- i - 1) * stride;
+        rowPtrs[i] = (png_bytep)data + q;
+    }
+    png_read_image(png_ptr, rowPtrs);
+    delete[] (png_bytep)rowPtrs;
+    png_destroy_read_struct(&png_ptr, &info_ptr,(png_infopp)0);
+
+	int size = m_width*m_height;
+	m_faces[face].m_buff.resize(size);
+	for (int j=0;j<m_height;j++)
+	{
+		for (int i=0;i<m_width;i++)
+		{
+			pixel b;
+			fpixel f;
+			int d = *reinterpret_cast<int*>(&data[(i+j*m_width) * bitdepth * channels / 8]);
+			b.r = (0xFF0000 & d) >> 16;
+			b.g = (0xFF00 & d) >> 8;
+			b.b = (0xFF & d);
+			f = b;
+			f.Pow(m_gamma);
+			m_faces[face].m_buff[i+j*m_width] = f;
+		}
+	}
+	delete[] data;
+}
+
+void PNGFile::SaveToFile(const Texture& tex, std::ostream& outputStream, int face)
+{
+    png_structp png_ptr = NULL;
+    png_infop info_ptr = NULL;
+    size_t x, y;
+    png_uint_32 bytes_per_row;
+    png_byte **row_pointers = NULL;
+
+    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (png_ptr == NULL) {
+    	return;
+    }
+    info_ptr = png_create_info_struct(png_ptr);
+    if (info_ptr == NULL) {
+    	png_destroy_write_struct(&png_ptr, NULL);
+    	return;
+    }
+    if (setjmp(png_jmpbuf(png_ptr))) {
+    	png_destroy_write_struct(&png_ptr, &info_ptr);
+    	return;
+    }
+
+    png_set_IHDR(png_ptr,
+                 info_ptr,
+                 tex.m_width,
+                 tex.m_height,
+                 8,
+                 PNG_COLOR_TYPE_RGB,
+                 PNG_INTERLACE_NONE,
+                 PNG_COMPRESSION_TYPE_DEFAULT,
+                 PNG_FILTER_TYPE_DEFAULT);
+
+    bytes_per_row = tex.m_width * 3;
+    row_pointers = (png_byte **)png_malloc(png_ptr, tex.m_height * sizeof(png_byte *));
+    for (y = 0; y < tex.m_height; ++y) {
+    	unsigned char *row = (unsigned char *)png_malloc(png_ptr, tex.m_width * sizeof(unsigned char) * 3);
+    	row_pointers[y] = (png_byte *)row;
+    	for (x = 0; x < tex.m_width; ++x) {
+            pixel b;
+			fpixel f;
+			f = tex.m_faces[face].m_buff[x+(tex.m_height - 1 - y)*tex.m_width];
+			f.Pow(1.0f/tex.m_gamma);
+			b = pixel(f.r * 255, f.g * 255, f.b * 255);
+    		*row++ = b.r;
+    		*row++ = b.g;
+    		*row++ = b.b;
+    	}
+    }
+
+    mem_encode state;
+    state.buffer = NULL;
+    state.size = 0;
+
+    png_set_write_fn(png_ptr, &state, my_png_write_data, NULL);
+
+    png_set_rows(png_ptr, info_ptr, row_pointers);
+    png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
+
+    if(state.buffer)
+    {
+      outputStream.write((char*)(state.buffer),state.size);
+      free(state.buffer);
+    }
+    for (y = 0; y < tex.m_height; y++) {
+    	png_free(png_ptr, row_pointers[y]);
+    }
+    png_free(png_ptr, row_pointers);
+
+    png_destroy_write_struct(&png_ptr, &info_ptr);
+	return;
 }
 
 void GetIndicesFromUV(const double2& uv, int width, int height, int& i, int& j)

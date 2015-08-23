@@ -92,6 +92,10 @@ int main(int argc, char* argv[])
 	{
 		format = new DDSFile;
 	}
+	else if (formatString == "PNG")
+	{
+		format = new PNGFile;
+	}
 	else
 	{
 		printf("Error: Wrong output format!\n");

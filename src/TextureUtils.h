@@ -30,6 +30,7 @@ public:
 private:
 	void LoadDDStexture(std::istream& inputStream, int face);
 	void LoadTARGAtexture(std::istream& inputStream, int face);
+	void LoadPNGtexture(std::istream& inputStream, int face);
 };
 
 class IFileFormat
@@ -45,6 +46,12 @@ public:
 };
 
 class DDSFile: public IFileFormat
+{
+public:
+	virtual void SaveToFile(const Texture& tex, std::ostream& outputStream, int face);
+};
+
+class PNGFile: public IFileFormat
 {
 public:
 	virtual void SaveToFile(const Texture& tex, std::ostream& outputStream, int face);
