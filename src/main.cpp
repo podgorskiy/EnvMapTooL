@@ -88,6 +88,10 @@ int main(int argc, char* argv[])
 	{
 		format = new TGAFile;
 	}
+	else if (formatString == "DDS")
+	{
+		format = new DDSFile;
+	}
 	else
 	{
 		printf("Error: Wrong output format!\n");

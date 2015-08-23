@@ -80,7 +80,7 @@ void Texture::LoadDDStexture(std::istream& inputStream, int face)
 
 	bool alpha = ((header.ddspf.dwFlags & DDS_RGBA) == DDS_RGBA);
 
-	if ((header.ddspf.dwSize==32)|(header.ddspf.dwSize==24))
+	if ((header.ddspf.dwRGBBitCount==32)|(header.ddspf.dwRGBBitCount==24))
 	{
 		m_width = header.dwWidth;
 		m_height = header.dwHeight;
@@ -182,6 +182,52 @@ void TGAFile::SaveToFile(const Texture& tex, std::ostream& outputStream, int fac
 		}
 	}
 	return;
+}
+
+void DDSFile::SaveToFile(const Texture& tex, std::ostream& outputStream, int face)
+{
+	DWORD magic = 0x20534444;
+	outputStream.write((char*)&magic,sizeof(DWORD));
+	DDS_HEADER header;
+	header.dwSize = sizeof(DDS_HEADER);
+	header.dwHeaderFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PITCH | DDSD_PIXELFORMAT | DDSD_MIPMAPCOUNT;
+	header.dwSurfaceFlags = DDSCAPS_TEXTURE;
+	if(tex.m_cubemap)
+	{
+        header.dwSurfaceFlags |= DDS_SURFACE_FLAGS_CUBEMAP;
+        header.dwCubemapFlags = DDS_CUBEMAP_ALLFACES;
+	}
+    header.ddspf.dwFlags = DDS_RGB;
+
+    header.dwWidth = tex.m_width;
+	header.dwHeight = tex.m_height;
+    header.ddspf.dwSize=32;
+    header.ddspf.dwRGBBitCount = 24;
+    header.ddspf.dwRBitMask = 0x00ff0000;
+    header.ddspf.dwGBitMask = 0x0000ff00;
+    header.ddspf.dwBBitMask = 0x000000ff;
+    header.ddspf.dwABitMask = 0xff000000;
+    header.dwMipMapCount = 0;
+    header.dwPitchOrLinearSize = (tex.m_width * 24 + 7)/8;
+
+	outputStream.write((char*)&header,sizeof(DDS_HEADER));
+
+	int countOfFaces = tex.m_cubemap ? 6 : 1;
+	int size = tex.m_width * tex.m_height;
+
+	for (int k=0; k < countOfFaces; k++)
+    {
+        for (int j=tex.m_height-1;j>=0;j--){
+            for (int i=tex.m_width-1;i>=0;i--){
+                pixel b;
+                fpixel f;
+                f = tex.m_faces[k].m_buff[i+j*tex.m_width];
+                f.Pow(1.0f/tex.m_gamma);
+                b = pixel(f.r * 255, f.g * 255, f.b * 255);
+                outputStream.write((char*)(&b),sizeof(pixel));
+			}
+		}
+    }
 }
 
 void GetIndicesFromUV(const double2& uv, int width, int height, int& i, int& j)
