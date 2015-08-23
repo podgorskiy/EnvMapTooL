@@ -2,10 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="libs">
-      <UniqueIdentifier>{655287F6-C716-8876-42F7-F80A18A0FB94}</UniqueIdentifier>
+      <UniqueIdentifier>{3E390FC8-BDBF-BF87-A91B-7BCEC693B01C}</UniqueIdentifier>
     </Filter>
     <Filter Include="libs\libpng">
-      <UniqueIdentifier>{3EB70109-223B-3BBD-D261-738908D7E284}</UniqueIdentifier>
+      <UniqueIdentifier>{94824B2C-31EF-D02D-487D-FCD7DBF376C1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

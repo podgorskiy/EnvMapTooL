@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F26BC4BC-C28A-2764-0B07-C683998FE17D}</ProjectGuid>
+    <ProjectGuid>{F7FEEB89-F50E-DF32-3AD5-E8372E032BC5}</ProjectGuid>
     <RootNamespace>EnvMapTool</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -53,7 +53,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\libs\tclap\include;..\..\libs\zlib;..\..\libs\libpng;..\..\libs\libjpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src;..\..\libs\tclap\include;..\..\libs\zlib;..\..\libs\libpng;..\..\libs\libjpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -66,7 +66,7 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\libs\tclap\include;..\..\libs\zlib;..\..\libs\libpng;..\..\libs\libjpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src;..\..\libs\tclap\include;..\..\libs\zlib;..\..\libs\libpng;..\..\libs\libjpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -78,7 +78,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\libs\tclap\include;..\..\libs\zlib;..\..\libs\libpng;..\..\libs\libjpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src;..\..\libs\tclap\include;..\..\libs\zlib;..\..\libs\libpng;..\..\libs\libjpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
@@ -90,7 +90,7 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\libs\tclap\include;..\..\libs\zlib;..\..\libs\libpng;..\..\libs\libjpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src;..\..\libs\tclap\include;..\..\libs\zlib;..\..\libs\libpng;..\..\libs\libjpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -102,28 +102,40 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\GaussianWeights.h" />
     <ClInclude Include="..\..\src\TextureUtils.h" />
     <ClInclude Include="..\..\src\dds.h" />
     <ClInclude Include="..\..\src\EnvMapMath.h" />
     <ClInclude Include="..\..\src\CoordinateTransform.h" />
+    <ClInclude Include="..\..\src\Actions\Actions.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp">
     </ClCompile>
     <ClCompile Include="..\..\src\TextureUtils.cpp">
     </ClCompile>
+    <ClCompile Include="..\..\src\GaussianWeights.cpp">
+    </ClCompile>
     <ClCompile Include="..\..\src\CoordinateTransform.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\src\Actions\CubeMap2Sphere.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\src\Actions\Sphere2CubeMap.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\src\Actions\FastBlurCubemap.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\src\Actions\BlurCubemap.cpp">
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="png.vcxproj">
-      <Project>{BDE4F583-E2E8-CA50-7530-FE35073BB64B}</Project>
+      <Project>{17161AA9-51C6-783A-D5FA-405DE2DDBDE6}</Project>
     </ProjectReference>
     <ProjectReference Include="zlib.vcxproj">
-      <Project>{C05A44E1-B804-2576-61E5-1B97550BB21B}</Project>
+      <Project>{9C3393D6-A13A-B928-96CB-41447E6C7594}</Project>
     </ProjectReference>
     <ProjectReference Include="jpeg.vcxproj">
-      <Project>{FD792614-BB6D-7B85-D431-9D27671B1029}</Project>
+      <Project>{FB1FD731-4B7E-FD73-5596-A913B58D857E}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

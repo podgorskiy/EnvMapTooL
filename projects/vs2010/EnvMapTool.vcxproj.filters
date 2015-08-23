@@ -2,10 +2,16 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{0DF498AB-2526-5B0A-4293-057AD4048E2D}</UniqueIdentifier>
+      <UniqueIdentifier>{C2A66204-AFDF-DF5B-1CF3-1101CB48BB92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Actions">
+      <UniqueIdentifier>{A830F1BA-A469-D895-4D86-70652C28CC9B}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\GaussianWeights.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\TextureUtils.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -18,6 +24,9 @@
     <ClInclude Include="..\..\src\CoordinateTransform.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Actions\Actions.h">
+      <Filter>src\Actions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp">
@@ -26,8 +35,23 @@
     <ClCompile Include="..\..\src\TextureUtils.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\GaussianWeights.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\CoordinateTransform.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Actions\CubeMap2Sphere.cpp">
+      <Filter>src\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Actions\Sphere2CubeMap.cpp">
+      <Filter>src\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Actions\FastBlurCubemap.cpp">
+      <Filter>src\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Actions\BlurCubemap.cpp">
+      <Filter>src\Actions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

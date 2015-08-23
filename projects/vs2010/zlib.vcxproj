@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C05A44E1-B804-2576-61E5-1B97550BB21B}</ProjectGuid>
+    <ProjectGuid>{9C3393D6-A13A-B928-96CB-41447E6C7594}</ProjectGuid>
     <RootNamespace>zlib</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>

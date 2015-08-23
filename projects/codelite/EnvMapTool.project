@@ -2,9 +2,18 @@
 <CodeLite_Project Name="EnvMapTool">
   <VirtualDirectory Name="EnvMapTool">
     <VirtualDirectory Name="src">
+      <VirtualDirectory Name="Actions">
+        <File Name="../../src/Actions/Actions.h"/>
+        <File Name="../../src/Actions/BlurCubemap.cpp"/>
+        <File Name="../../src/Actions/CubeMap2Sphere.cpp"/>
+        <File Name="../../src/Actions/FastBlurCubemap.cpp"/>
+        <File Name="../../src/Actions/Sphere2CubeMap.cpp"/>
+      </VirtualDirectory>
       <File Name="../../src/CoordinateTransform.cpp"/>
       <File Name="../../src/CoordinateTransform.h"/>
       <File Name="../../src/EnvMapMath.h"/>
+      <File Name="../../src/GaussianWeights.cpp"/>
+      <File Name="../../src/GaussianWeights.h"/>
       <File Name="../../src/TextureUtils.cpp"/>
       <File Name="../../src/TextureUtils.h"/>
       <File Name="../../src/dds.h"/>
@@ -15,6 +24,7 @@
     <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../EnvMapTool" IntermediateDirectory="obj/Debug/EnvMapTool" Command="./EnvMapTool" CommandArguments="-i uffizi_cros.dds" WorkingDirectory="../.." PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g">
+        <IncludePath Value="../../src"/>
         <IncludePath Value="../../libs/tclap/include"/>
         <IncludePath Value="../../libs/zlib"/>
         <IncludePath Value="../../libs/libpng"/>
@@ -46,6 +56,7 @@
     <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../EnvMapTool" IntermediateDirectory="obj/Release/EnvMapTool" Command="./EnvMapTool" CommandArguments="" WorkingDirectory="../.." PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../src"/>
         <IncludePath Value="../../libs/tclap/include"/>
         <IncludePath Value="../../libs/zlib"/>
         <IncludePath Value="../../libs/libpng"/>
