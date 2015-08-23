@@ -37,6 +37,14 @@ public:
     int m_blurQuality;
 };
 
+class FastBlurCubemap: public IAction
+{
+public:
+    virtual void DoTask(const Texture& inputTex, Texture& outputTex);
+
+    float m_blurRadius;
+};
+
 class DummyAction: public IAction
 {
 public:
@@ -73,6 +81,7 @@ int main(int argc, char* argv[])
 		allowed.push_back("cube2sphere");
 		allowed.push_back("sphere2cube");
 		allowed.push_back("blurCubemap");
+		allowed.push_back("fastBlurCubemap");
 		allowed.push_back("convert");
 		TCLAP::ValuesConstraint<std::string> allowedVals( allowed );
 
@@ -159,6 +168,12 @@ int main(int argc, char* argv[])
     {
         BlurCubemap* blur = new BlurCubemap;
         blur->m_blurQuality = blurQualityArg.getValue();
+        blur->m_blurRadius = blurRadiusArg.getValue();
+        action = blur;
+    }
+    else if (actionString == "fastBlurCubemap")
+    {
+        FastBlurCubemap* blur = new FastBlurCubemap;
         blur->m_blurRadius = blurRadiusArg.getValue();
         action = blur;
     }
@@ -312,103 +327,167 @@ void BlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
         }
     }
     outputTex.m_cubemap = true;
+}
 
-    // Noise down step
-    Texture tmpTex = outputTex;
-    Texture tmpTex23 = outputTex;
-    int radius = 31;
+
+void FastBlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
+{
+    if (!inputTex.m_cubemap)
+    {
+        printf("Error: For this task required cubmap.\n");
+        return;
+    }
+
+    int radius = m_blurRadius;
     int kernelSize = 2 * radius + 1;
     std::vector<double> kernel = GenerateKernel(1.0 / 3.0 * radius, kernelSize, 1000.0);
+    Texture tmpTex = outputTex;
+
+    Texture tmpTex2 = outputTex;
+    Texture resTex = outputTex;
+
     for(int k = 0; k <6; ++k)
 	{
+        tmpTex = outputTex;
+        tmpTex2 = outputTex;
 
-        for (int i = 0;i<outputTex.m_height;i++)
+        for(int ki = 0; ki <6; ++ki)
         {
-            for (int j = 0;j<outputTex.m_width;j++)
+            for (int i = 0;i<outputTex.m_height;i++)
             {
-                fpixel s(0.0, 0.0, 0.0);
-                for(int n = -radius; n < radius+1; ++n)
+                for (int j = 0;j<outputTex.m_width;j++)
                 {
-                    int j_ = j + n;
-                    int k_ = k;
-                    if (k != 2 && k != 3)
+                    fpixel s(0.0, 0.0, 0.0);
+                    for(int n = -radius; n < radius+1; ++n)
                     {
-                        if (j_ < 0)
+                        int j_ = j + n;
+                        int k_ = ki;
+                        if (ki != 2 && ki != 3)
                         {
-                            j_ += outputTex.m_width;
-                            switch(k)
+                            if (j_ < 0)
                             {
-                            case 4:k_ = 0; break;
-                            case 5:k_ = 1; break;
-                            case 0:k_ = 5; break;
-                            case 1:k_ = 4; break;
+                                j_ += outputTex.m_width;
+                                switch(ki)
+                                {
+                                case 4:k_ = 0; break;
+                                case 5:k_ = 1; break;
+                                case 0:k_ = 5; break;
+                                case 1:k_ = 4; break;
+                                }
                             }
-                        }
-                        if (j_ >= outputTex.m_width)
-                        {
-                            j_ -= outputTex.m_width;
-                            switch(k)
+                            if (j_ >= outputTex.m_width)
                             {
-                            case 0:k_ = 4; break;
-                            case 1:k_ = 5; break;
-                            case 5:k_ = 0; break;
-                            case 4:k_ = 1; break;
+                                j_ -= outputTex.m_width;
+                                switch(ki)
+                                {
+                                case 0:k_ = 4; break;
+                                case 1:k_ = 5; break;
+                                case 5:k_ = 0; break;
+                                case 4:k_ = 1; break;
 
+                                }
                             }
+                            s += outputTex.m_faces[k_].m_buff[j_ + i*outputTex.m_width] * kernel[n + radius];
                         }
-                        s += outputTex.m_faces[k_].m_buff[j_ + i*outputTex.m_width] * kernel[n + radius];
-                    }
-                    else
-                    {
-                        if (k==2)
+                        else
                         {
-                            if (j_ < 0)
+                            if(k!= 0 && k!= 1)
                             {
-                                j_ += outputTex.m_width;
-                                k_ = 0;
-                                s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - i - 1) + j_*outputTex.m_width] * kernel[n + radius];
-                            }
-                            else if (j_ >= outputTex.m_width)
-                            {
-                                j_ -= outputTex.m_width;
-                                j_ = outputTex.m_height - j_ - 1;
-                                k_ = 1;
-                                s += outputTex.m_faces[k_].m_buff[i + j_*outputTex.m_width] * kernel[n + radius];
+                                if (ki==2)
+                                {
+                                    if (j_ < 0)
+                                    {
+                                        j_ += outputTex.m_width;
+                                        k_ = 0;
+                                        s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - i - 1) + j_*outputTex.m_width] * kernel[n + radius];
+                                    }
+                                    else if (j_ >= outputTex.m_width)
+                                    {
+                                        j_ -= outputTex.m_width;
+                                        j_ = outputTex.m_height - j_ - 1;
+                                        k_ = 1;
+                                        s += outputTex.m_faces[k_].m_buff[i + j_*outputTex.m_width] * kernel[n + radius];
+                                    }
+                                    else
+                                    {
+                                        s += outputTex.m_faces[k_].m_buff[j_ + i*outputTex.m_width] * kernel[n + radius];
+                                    }
+                                }
+                                else//ki = 3
+                                {
+                                    if (j_ < 0)
+                                    {
+                                        j_ += outputTex.m_width;
+                                        k_ = 0;
+                                        s += outputTex.m_faces[k_].m_buff[i + (outputTex.m_height - j_ - 1)*outputTex.m_width] * kernel[n + radius];
+                                    }
+                                    else if (j_ >= outputTex.m_width)
+                                    {
+                                        j_ -= outputTex.m_width;
+                                        j_ = outputTex.m_height - j_ - 1;
+                                        k_ = 1;
+                                        s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - i - 1) + (outputTex.m_height - j_ - 1)*outputTex.m_width] * kernel[n + radius];
+                                    }
+                                    else
+                                    {
+                                        s += outputTex.m_faces[k_].m_buff[j_ + i*outputTex.m_width] * kernel[n + radius];
+                                    }
+                                }
                             }
                             else
                             {
-                                s += outputTex.m_faces[k_].m_buff[j_ + i*outputTex.m_width] * kernel[n + radius];
-                            }
-                        }
-                        else//k = 3
-                        {
-                            if (j_ < 0)
-                            {
-                                j_ += outputTex.m_width;
-                                k_ = 0;
-                                s += outputTex.m_faces[k_].m_buff[i + (outputTex.m_height - j_ - 1)*outputTex.m_width] * kernel[n + radius];
-                            }
-                            else if (j_ >= outputTex.m_width)
-                            {
-                                j_ -= outputTex.m_width;
-                                j_ = outputTex.m_height - j_ - 1;
-                                k_ = 1;
-                                s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - i - 1) + (outputTex.m_height - j_ - 1)*outputTex.m_width] * kernel[n + radius];
-                            }
-                            else
-                            {
-                                s += outputTex.m_faces[k_].m_buff[j_ + i*outputTex.m_width] * kernel[n + radius];
+                                int i_ = i + n;
+                                int k_ = ki;
+                                if (ki == 2)
+                                {
+                                    if (i_ < 0)
+                                    {
+                                        i_ += outputTex.m_height;
+                                        k_ = 4;
+                                        s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                                    }
+                                    else if (i_ >= outputTex.m_width)
+                                    {
+                                        i_ -= outputTex.m_width;
+                                        i_ = outputTex.m_height - i_ - 1;
+                                        k_ = 5;
+                                        s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
+                                    }
+                                    else
+                                    {
+                                        s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                                    }
+                                }
+                                if (ki == 3)
+                                {
+                                    if (i_ < 0)
+                                    {
+                                        i_ += outputTex.m_height;
+                                        i_ = outputTex.m_height - i_ - 1;
+                                        k_ = 5;
+                                        s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
+                                    }
+                                    else if (i_ >= outputTex.m_width)
+                                    {
+                                        i_ -= outputTex.m_width;
+                                        k_ = 4;
+                                        s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                                    }
+                                    else
+                                    {
+                                        s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                                    }
+                                }
                             }
                         }
                     }
+                    tmpTex.m_faces[ki].m_buff[j + i*outputTex.m_width]  = s;
                 }
-                tmpTex.m_faces[k].m_buff[j + i*outputTex.m_width]  = s;
             }
         }
-    }
-    for(int k = 2; k <4; ++k)
-	{
-        for (int j = 0;j<outputTex.m_width;j++)
+
+
+        for (int j = 0 ;j<outputTex.m_width;j++)
         {
             for (int i = 0;i<outputTex.m_height;i++)
             {
@@ -423,18 +502,18 @@ void BlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
                         {
                             i_ += outputTex.m_height;
                             k_ = 4;
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
                         }
                         else if (i_ >= outputTex.m_width)
                         {
                             i_ -= outputTex.m_width;
                             i_ = outputTex.m_height - i_ - 1;
                             k_ = 5;
-                            s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
                         }
                         else
                         {
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
                         }
                     }
                     if (k == 3)
@@ -444,75 +523,17 @@ void BlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
                             i_ += outputTex.m_height;
                             i_ = outputTex.m_height - i_ - 1;
                             k_ = 5;
-                            s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
                         }
                         else if (i_ >= outputTex.m_width)
                         {
                             i_ -= outputTex.m_width;
                             k_ = 4;
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
                         }
                         else
                         {
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
-                        }
-                    }
-                }
-                tmpTex23.m_faces[k].m_buff[j + i*outputTex.m_width]  = s;
-            }
-        }
-	}
-
-	outputTex = tmpTex;
-    for(int k = 0; k <6; ++k)
-	{
-        for (int j = 0;j<outputTex.m_width;j++)
-        {
-            for (int i = 0;i<outputTex.m_height;i++)
-            {
-                fpixel s(0.0, 0.0, 0.0);
-                for(int n = -radius; n < radius+1; ++n)
-                {
-                    int i_ = i + n;
-                    int k_ = k;
-                    if (k == 2)
-                    {
-                        if (i_ < 0)
-                        {
-                            i_ += outputTex.m_height;
-                            k_ = 4;
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
-                        }
-                        else if (i_ >= outputTex.m_width)
-                        {
-                            i_ -= outputTex.m_width;
-                            i_ = outputTex.m_height - i_ - 1;
-                            k_ = 5;
-                            s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
-                        }
-                        else
-                        {
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
-                        }
-                    }
-                    if (k == 3)
-                    {
-                        if (i_ < 0)
-                        {
-                            i_ += outputTex.m_height;
-                            i_ = outputTex.m_height - i_ - 1;
-                            k_ = 5;
-                            s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
-                        }
-                        else if (i_ >= outputTex.m_width)
-                        {
-                            i_ -= outputTex.m_width;
-                            k_ = 4;
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
-                        }
-                        else
-                        {
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
                         }
                     }
                     else if(k == 5)
@@ -522,18 +543,18 @@ void BlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
                             i_ += outputTex.m_height;
                             i_ = outputTex.m_height - i_ - 1;
                             k_ = 3;
-                            s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
                         }
                         else if (i_ >= outputTex.m_width)
                         {
                             i_ -= outputTex.m_width;
                             i_ = outputTex.m_height - i_ - 1;
                             k_ = 2;
-                            s += outputTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[(outputTex.m_width - j - 1) + i_*outputTex.m_width] * kernel[n + radius];
                         }
                         else
                         {
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
                         }
                     }
                     else if(k == 4)
@@ -542,17 +563,17 @@ void BlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
                         {
                             i_ += outputTex.m_height;
                             k_ = 3;
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
                         }
                         else if (i_ >= outputTex.m_width)
                         {
                             i_ -= outputTex.m_width;
                             k_ = 2;
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
                         }
                         else
                         {
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
                         }
                     }
                     else if(k == 0)
@@ -562,17 +583,17 @@ void BlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
                             i_ += outputTex.m_height;
                             i_ = outputTex.m_width - 1 - i_;
                             k_ = 3;
-                            s += tmpTex23.m_faces[k_].m_buff[i_ + j * outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[i_ + j * outputTex.m_width] * kernel[n + radius];
                         }
                         else if (i_ >= outputTex.m_width)
                         {
                             i_ -= outputTex.m_width;
                             k_ = 2;
-                            s += tmpTex23.m_faces[k_].m_buff[i_ + (outputTex.m_height - j - 1)*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[i_ + (outputTex.m_height - j - 1)*outputTex.m_width] * kernel[n + radius];
                         }
                         else
                         {
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
                         }
                     }
                     else if(k == 1)
@@ -581,27 +602,29 @@ void BlurCubemap::DoTask(const Texture& inputTex, Texture& outputTex)
                         {
                             i_ += outputTex.m_height;
                             k_ = 3;
-                            s += tmpTex23.m_faces[k_].m_buff[i_ + (outputTex.m_height - j - 1) * outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[i_ + (outputTex.m_height - j - 1) * outputTex.m_width] * kernel[n + radius];
                         }
                         else if (i_ >= outputTex.m_width)
                         {
                             i_ -= outputTex.m_width;
                             i_ = outputTex.m_width - 1 - i_;
                             k_ = 2;
-                            s += tmpTex23.m_faces[k_].m_buff[i_ + j * outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[i_ + j * outputTex.m_width] * kernel[n + radius];
                         }
                         else
                         {
-                            s += outputTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
+                            s += tmpTex.m_faces[k_].m_buff[j + i_*outputTex.m_width] * kernel[n + radius];
                         }
                     }
                 }
-                tmpTex.m_faces[k].m_buff[j + i*outputTex.m_width]  = s;
+                tmpTex2.m_faces[k].m_buff[j + i*outputTex.m_width]  = s;
             }
         }
-
+        resTex.m_faces[k] = tmpTex2.m_faces[k];
 	}
-	outputTex = tmpTex;
+
+	outputTex = resTex;
+    outputTex.m_cubemap = true;
 }
 
 double gaussianDistribution(double x, double mu, double sigma)
