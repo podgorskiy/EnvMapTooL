@@ -78,8 +78,107 @@ EnvMapTool -i sphere.png -O xp_.png -O xm_.png -O yp_.png -O ym_.png -O zp_.png 
 ![zp_](https://cloud.githubusercontent.com/assets/3229783/9427228/e0585396-493e-11e5-843b-fedc8914b3b3.png)
 ![zm_](https://cloud.githubusercontent.com/assets/3229783/9427227/de91b318-493e-11e5-92d6-50c1e24426cb.png)
 
-##Bluring cubemap using MonteCarlo approach and converting it to spheremap:
+##Bluring cubemap using Monte-Carlo approach and converting it to spheremap:
 ```
-EnvMapTool -i uffizi_cros.dds -O 1.png -O 2.png -O 3.png -O 4.png -O 5.png -O 6.png -f PNG blurCubemap -b 30 -q 10
+EnvMapTool -i uffizi_cros.dds -O 1.png -O 2.png -O 3.png -O 4.png -O 5.png -O 6.png -W 256 -H 256 -f PNG blurCubemap -b 60 -q 10
 EnvMapTool -I 1.png -I 2.png -I 3.png -I 4.png -I 5.png -I 6.png -o bluredSphere.png -W 765 -H 765 -f PNG cube2sphere
+```
+![bluredsphere](https://cloud.githubusercontent.com/assets/3229783/9427291/0fa9994e-4943-11e5-8561-ab076144bc67.png)
+
+##The same as above, but using fast blur:
+```
+EnvMapTool -i uffizi_cros.dds -O 1.png -O 2.png -O 3.png -O 4.png -O 5.png -O 6.png -f PNG fastBlurCubemap -b 30
+EnvMapTool -I 1.png -I 2.png -I 3.png -I 4.png -I 5.png -I 6.png -o fastBluredSphere.png -W 765 -H 765 -f PNG cube2sphere
+```
+![fastbluredsphere](https://cloud.githubusercontent.com/assets/3229783/9427292/1b0e2e8a-4943-11e5-8d9a-07ba8844a7d2.png)
+
+##Detailed usage:
+```
+USAGE: 
+
+   ./EnvMapTool  {-o <Output file>|-O <Output files> ... } {-i <Input file>
+                 |-I <Input files> ... } [-f <Output format>] [-F <Face to
+                 write>] [-q <Blur quality>] [-b <Blur radius>] [-l] [-g
+                 <Input gamma>] [-G <Output gamma>] [-H <Output texture
+                 height>] [-W <Output texture width>] [--version] [-h]
+                 <cube2sphere|sphere2cube|blurCubemap|fastBlurCubemap
+                 |convert>
+
+
+Where: 
+
+   -o <Output file>,  --output <Output file>
+     (OR required)  The output texture file.
+         -- OR --
+   -O <Output files>,  --outputSequence <Output files>  (accepted multiple
+      times)
+     (OR required)  The output texture files for cube map. You need specify
+     six files: xp, xn yp, yn, zp, zn
+
+
+   -i <Input file>,  --input <Input file>
+     (OR required)  The input texture file. Can be of the following
+     formats: *.tga, *.png, *.dds
+         -- OR --
+   -I <Input files>,  --inputSequence <Input files>  (accepted multiple
+      times)
+     (OR required)  The input texture files for cube map. You need specify
+     six files: xp, xn yp, yn, zp, zn. WARNING! All the files MUST be the
+     same format and size!
+
+
+   -f <Output format>,  --format <Output format>
+     Output texture file format. Can be one of the following "TGA", "DDS",
+     "PNG". Default TGA.
+
+   -F <Face to write>,  --faceToWrite <Face to write>
+     If cubemap texture is written to format that does not support faces,
+     this face will be written
+
+   -q <Blur quality>,  --blurQuality <Blur quality>
+     Effects the number of samples in Monte Carlo integration. Reasonable
+     values are between 4 - 8. Large values will increase calculation time
+     dramatically. Default is 4
+
+   -b <Blur radius>,  --blurRadius <Blur radius>
+     Gaussian blur radius. Default is 10.0
+
+   -l,  --leaveOuter
+     If flag is set, than while cubemap -> sphere transform area around the
+     sphere circule are not filled black, but represent mathematical
+     extrapolation.
+
+   -g <Input gamma>,  --inputGamma <Input gamma>
+     Gamma of input texture. Default is 2.2
+
+   -G <Output gamma>,  --outputGamma <Output gamma>
+     Gamma of output texture. Default is 2.2
+
+   -H <Output texture height>,  --outputHeight <Output texture height>
+     Height of output texture. Default is the same as input, or 4 times
+     upscaled in case of cube2sphere transform, or 4 times downscaled in
+     case of sphere2cube transform
+
+   -W <Output texture width>,  --outputWidth <Output texture width>
+     Width of output texture. Default is the same as input, or 4 times
+     upscaled in case of cube2sphere transform, or 4 times downscaled in
+     case of sphere2cube transform
+
+   --version
+     Displays version information and exits.
+
+   -h,  --help
+     Displays usage information and exits.
+
+   <cube2sphere|sphere2cube|blurCubemap|fastBlurCubemap|convert>
+     (required)  Action. Can be:
+
+     	cube2sphere - Converts cube map texture to spherical map
+
+     	sphere2cube - Converts spherical map texture to cube map
+
+     	blurCubemap - Gaussian blur of cubemap
+
+     	convert - Do nothing. Just to convert txture from one format to
+     other
 ```
